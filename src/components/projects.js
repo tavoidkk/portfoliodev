@@ -13,6 +13,6 @@ export const projects = [
     href: "https://stitch.withgoogle.com/projects/9415470412202712281",
     preview: "",
     tags: ["React", "NodeJS", "MySQL"],
-    image: "/svgl.webp",
+    image: "/crm.webp",
   },
 ];
