@@ -1,0 +1,96 @@
+---
+interface Props {
+  date: string;
+  title: string;
+  company: string;
+  description: string;
+  href: string;
+  tags?: string[];
+}
+
+const { date, title, company, description, href, tags } = Astro.props;
+
+const tagColors = {
+  'JavaScript': 'bg-[#F7DF1E] text-black dark:bg-[#F7DF1E] dark:text-black',
+  'React': 'bg-[#61DAFB] text-black dark:bg-[#61DAFB] dark:text-black',
+  'MySQL': 'bg-[#61DAFB] text-black dark:bg-[#61DAFB] dark:text-black',
+  'MongoDB': 'bg-[#47A248] text-white dark:bg-[#47A248] dark:text-white',
+  'Git': 'bg-[#F05033] text-white dark:bg-[#F05033] dark:text-white',
+  'HTML': 'bg-[#FF5D01] text-white dark:bg-[#F05033] dark:text-white',
+  'Node.js': 'bg-[#5FA04E] text-white dark:bg-[#5FA04E] dark:text-white',
+  'Astro': 'bg-[#FF5D01] text-white dark:bg-[#FF5D01] dark:text-white',
+  'Tailwind CSS': 'bg-[#38B2AC] text-white dark:bg-[#38B2AC] dark:text-white',
+};
+
+const getTagClass = (tag: string): string => {
+    if (tag in tagColors) {
+        return tagColors[tag as keyof typeof tagColors];
+    }
+    return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
+};
+---
+
+<li class="project-animate opacity-0 translate-y-8 transition-all duration-700 relative mb-6 ms-2 md:ms-4 p-3 md:p-4 rounded-md bg-gray-900 border border-[rgb(125,255,255)]/20 hover:border-[rgb(163,73,247)]"> 
+    <div class="absolute size-2 bg-gray-200 rounded-full mt-6 md:mt-8 -start-3.5 md:-start-4.5 border border-white dark:border-gray-900 dark:bg-purple-400/90"></div> 
+    <div class="mb-2"> 
+        <time class="mb-1 text-[10px] md:text-xs font-normal leading-none text-white/70"> 
+            {date} 
+        </time> 
+        <h3 class="text-sm md:text-base font-bold text-gray-900 dark:text-yellow-400 break-words">  
+            {href
+                ? <a href={href} class="hover:underline">{title}</a>
+                : <span>{title}</span>
+            }
+            <span class="block sm:inline text-[10px] md:text-xs font-light text-gray-400 dark:text-[rgb(162,136,255)] sm:ml-2 mt-1 sm:mt-0"> 
+                {company} 
+            </span> 
+        </h3> 
+    </div> 
+    <p class="mb-2 text-xs md:text-sm font-normal text-gray-500 dark:text-gray-400"> 
+        {description} 
+    </p> 
+    {tags && (
+        <div class="flex flex-wrap gap-1 mt-1">
+            {tags.map((tag) => (
+                <span class={`text-[9px] md:text-[10px] font-medium px-1.5 md:px-2 py-0.5 rounded-sm ${getTagClass(tag)}`}>
+                    {tag}
+                </span>
+            ))}
+        </div>
+    )}
+</li>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('opacity-0', 'translate-y-8');
+        entry.target.classList.add('opacity-100', 'translate-y-0');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.project-animate').forEach(el => observer.observe(el));
+});
+</script>
+
+<style>
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+.animate-fade-in-up {
+    animation: fade-in-up 1s cubic-bezier(.39,.575,.565,1) both;
+}
+.delay-200 {
+    animation-delay: .2s;
+}
+</style>

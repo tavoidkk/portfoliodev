@@ -1,0 +1,13 @@
+export { default as AstroIcon } from './Atros.astro';
+export { default as NextJSIcon } from './NextJS.astro';
+export { default as GitHubIcon } from './GitHub.astro';
+export { default as EyeIcon } from './Eye.astro';
+export { default as CodeIcon } from './Code.astro';
+export { default as PythonIcon } from './Python.astro';
+export { default as JavaScriptIcon } from './JavaScript.astro';
+export { default as ReactIcon } from './React.astro';
+export { default as ExperienceIcon } from './Experience.astro';
+export { default as NodeJSIcon } from './NodeJS.astro';
+export { default as ExpressJSIcon } from './ExpressJS.astro';
+export { default as MySQLIcon } from './MySQL.astro';
+// Agrega aquí más iconos si tienes otros

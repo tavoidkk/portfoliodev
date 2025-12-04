@@ -1,0 +1,63 @@
+<section
+  id="sobre-mi"
+  class="flex flex-col md:flex-row justify-between items-start gap-6 md:gap-4 lg:gap-6">
+  <div
+    class="w-full md:w-[60%] lg:w-[65%] about-animate opacity-0 translate-y-8 transition-all duration-700"
+    id="about-text">
+    <p class="text-sm md:text-base lg:text-lg text-gray-200 mb-4 md:mb-6">
+      Desde pequeño he sido amante de la tecnología y siempre quise estudiar algo relacionado. Me apasiona todo lo que tiene que ver con internet y el desarrollo web, porque une lo mejor de ambos mundos.
+    </p>
+    <p class="text-sm md:text-base lg:text-lg text-gray-200 mb-4 md:mb-6">
+      Disfruto trabajar con <span class="font-semibold text-yellow-300">JavaScript</span> y sus frameworks como <span class="font-semibold text-blue-400">React</span>, además de las bases <span class="font-semibold text-orange-400">HTML</span> y <span class="font-semibold text-blue-300">CSS</span>. También manejo <span class="font-semibold text-green-400">Python</span>, redes, bases de datos SQL y conceptos básicos de AWS.
+    </p>
+    <p class="text-sm md:text-base lg:text-lg text-gray-200 mb-4 md:mb-6">
+      Mi mayor logro profesional hasta ahora es estar próximo a culminar mis estudios universitarios, ya que estoy en la etapa de tesis.
+    </p>
+    <p class="text-sm md:text-base lg:text-lg text-gray-200">
+      En mi próximo trabajo o proyecto, busco seguir mejorando mis habilidades como profesional y contribuir al crecimiento del equipo y la empresa.
+    </p>
+  </div>
+  <div
+    class="w-full md:w-[40%] lg:w-[35%] flex justify-center md:justify-end items-center about-animate opacity-0 translate-y-8 transition-all duration-700 md:pl-4 lg:pl-6"
+    id="about-img">
+    <div class="w-40 h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-full overflow-hidden ring-primary ring-offset-base-100 ring-2 ring-offset-2">
+      <img src="/public/icon (3).png" alt="Foto personal" class="w-full h-full object-cover object-center hover:scale-105 transition duration-500" />
+    </div>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.remove('opacity-0', 'translate-y-8');
+        entry.target.classList.add('opacity-100', 'translate-y-0');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.about-animate').forEach(el => observer.observe(el));
+});
+</script>
+
+<style>
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 1s cubic-bezier(.39,.575,.565,1) both;
+}
+.delay-200 {
+    animation-delay: .2s;
+}
+</style>
