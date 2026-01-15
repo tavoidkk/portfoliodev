@@ -10,4 +10,6 @@ export { default as ExperienceIcon } from './Experience.astro';
 export { default as NodeJSIcon } from './NodeJS.astro';
 export { default as ExpressJSIcon } from './ExpressJS.astro';
 export { default as MySQLIcon } from './MySQL.astro';
+export { default as TypeScriptIcon } from './TypeScript.astro';
+export { default as PostgreSQLIcon } from './PostgreSQL.astro';
 // Agrega aquí más iconos si tienes otros
