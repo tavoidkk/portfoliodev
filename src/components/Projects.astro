@@ -18,17 +18,39 @@ const TAG_ICONS: Record<string, any> = {
 };
 ---
 <section class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-    {projects.map((project, index) => (
-        <article class="glass-panel glow-border stagger-item relative w-full rounded-xl overflow-hidden" style={`transition-delay: ${index * 80}ms;`}>
+    {projects.map((project, index) => {
+        const primaryLink = project.preview || project.href;
+        return (
+        <article
+            class="glass-panel glow-border stagger-item relative w-full rounded-xl overflow-hidden"
+            style={`transition-delay: ${index * 80}ms;`}
+            data-project={JSON.stringify(project)}
+        >
             <figure class="relative aspect-video overflow-hidden">
                     <img class="w-full h-full object-cover" src={project.image} alt={project.title} />
             </figure>
             <section class="p-4 md:p-5 flex flex-col justify-between min-h-[190px]">
                 <header>
-                    <a href={project.href} target="_blank" rel="noopener noreferrer">
-                    <h3 class="mb-1 text-base md:text-lg font-semibold tracking-tight text-cyan-200">{project.title}</h3></a>
+                    {primaryLink ? (
+                    <a href={primaryLink} target="_blank" rel="noopener noreferrer">
+                        <h3 class="mb-1 text-base md:text-lg font-semibold tracking-tight text-cyan-200">{project.title}</h3>
+                    </a>
+                    ) : (
+                        <h3 class="mb-1 text-base md:text-lg font-semibold tracking-tight text-cyan-200">{project.title}</h3>
+                    )}
                 </header>
-                <p class="mb-4 text-xs md:text-sm font-normal text-slate-200/70">{project.description}</p>
+                <div class="mb-4">
+                    <p class="project-description text-xs md:text-sm font-normal text-slate-200/70" data-project-description>
+                        {project.description}
+                    </p>
+                    <button
+                        type="button"
+                        class="view-more-btn mt-2 hidden rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-cyan-200/90 transition hover:text-cyan-100"
+                        data-view-more
+                    >
+                        Ver mas
+                    </button>
+                </div>
                 <footer class="flex flex-row items-center justify-between gap-4">
                     <div class="flex items-center gap-2">
                         {project.tags.map((tag) => {
@@ -45,15 +67,105 @@ const TAG_ICONS: Record<string, any> = {
                         <a href={project.preview} target="_blank" rel="noopener noreferrer" class="text-slate-300/70 hover:text-cyan-200 transition-colors duration-300" aria-label="Ver proyecto">
                             <Icons.EyeIcon />
                         </a>)}
+                        {project.href && (
                         <a href={project.href} target="_blank" rel="noopener noreferrer" class="text-slate-300/70 hover:text-cyan-200 transition-colors duration-300" aria-label="Ver repositorio en GitHub">
                             <Icons.GitHubIcon class="w-5 h-5" />
-                        </a>
+                        </a>)}
                     </div>
                 </footer>
             </section>
         </article>
-    ))}
+    )})}
 </section>
+
+<div id="project-modal" class="project-modal fixed inset-0 z-50 hidden items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+    <div class="project-modal-backdrop absolute inset-0 bg-slate-950/70 backdrop-blur-sm" data-modal-backdrop></div>
+    <div class="project-modal-panel relative z-10 w-[min(92vw,600px)] max-h-[85vh] overflow-auto rounded-xl border border-white/10 bg-slate-900/95 p-5 md:p-6 shadow-xl">
+        <div class="mb-4 flex items-start justify-between gap-4">
+            <h3 id="project-modal-title" class="text-lg md:text-xl font-semibold tracking-tight text-cyan-200"></h3>
+            <button
+                type="button"
+                class="rounded-md border border-white/10 bg-white/10 px-2 py-1 text-xs font-semibold text-slate-200/80 transition hover:text-white"
+                data-modal-close
+                aria-label="Cerrar"
+            >
+                Cerrar
+            </button>
+        </div>
+        <div class="mb-4">
+            <img id="project-modal-image" class="h-40 w-full rounded-lg object-cover" src="" alt="" />
+        </div>
+        <div id="project-modal-tags" class="mb-4 flex flex-wrap gap-2"></div>
+        <p id="project-modal-description" class="text-sm md:text-base text-slate-200/80"></p>
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+            <a
+                id="project-modal-preview"
+                class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-semibold text-cyan-200 transition hover:text-cyan-100"
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ver proyecto"
+            >
+                <Icons.EyeIcon />
+                Vista previa
+            </a>
+            <a
+                id="project-modal-github"
+                class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-semibold text-slate-200/80 transition hover:text-white"
+                href=""
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Ver repositorio en GitHub"
+            >
+                <Icons.GitHubIcon class="h-5 w-5" />
+                GitHub
+            </a>
+        </div>
+    </div>
+</div>
+
+<div id="project-modal-icon-pool" class="hidden">
+    {Object.entries(TAG_ICONS).map(([tag, Icon]) => (
+        <span data-tag-icon={tag} class="rounded-md border border-white/10 bg-white/5 p-1 text-cyan-100">
+            <Icon class="h-4 w-4" />
+        </span>
+    ))}
+</div>
+
+<style>
+    .project-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .project-modal {
+        display: flex;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 320ms ease;
+    }
+    .project-modal-backdrop {
+        opacity: 0;
+        transition: opacity 320ms ease;
+    }
+    .project-modal-panel {
+        transform: translateY(12px) scale(0.96);
+        opacity: 0;
+        transition: transform 340ms ease, opacity 340ms ease;
+    }
+    .project-modal.is-visible {
+        opacity: 1;
+        pointer-events: auto;
+    }
+    .project-modal.is-visible .project-modal-backdrop {
+        opacity: 1;
+    }
+    .project-modal.is-visible .project-modal-panel {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+</style>
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -67,5 +179,109 @@ document.addEventListener('DOMContentLoaded', () => {
   }, { threshold: 0.2 });
 
   document.querySelectorAll('.stagger-item').forEach(el => observer.observe(el));
+
+  const modal = document.getElementById('project-modal');
+  const modalTitle = document.getElementById('project-modal-title');
+  const modalDescription = document.getElementById('project-modal-description');
+  const modalImage = document.getElementById('project-modal-image');
+  const modalTags = document.getElementById('project-modal-tags');
+  const iconPool = document.getElementById('project-modal-icon-pool');
+  const modalPreview = document.getElementById('project-modal-preview');
+  const modalGithub = document.getElementById('project-modal-github');
+  const closeButtons = modal ? modal.querySelectorAll('[data-modal-close], [data-modal-backdrop]') : [];
+
+  const openModal = (project) => {
+    if (!modal) return;
+    modalTitle.textContent = project.title || '';
+    modalDescription.textContent = project.description || '';
+    if (project.image) {
+      modalImage.src = project.image;
+      modalImage.alt = project.title || 'Proyecto';
+      modalImage.classList.remove('hidden');
+    } else {
+      modalImage.classList.add('hidden');
+    }
+
+    if (modalPreview) {
+      if (project.preview) {
+        modalPreview.href = project.preview;
+        modalPreview.classList.remove('hidden');
+      } else {
+        modalPreview.classList.add('hidden');
+      }
+    }
+
+    if (modalGithub) {
+      if (project.href) {
+        modalGithub.href = project.href;
+        modalGithub.classList.remove('hidden');
+      } else {
+        modalGithub.classList.add('hidden');
+      }
+    }
+
+    modalTags.innerHTML = '';
+    if (Array.isArray(project.tags) && iconPool) {
+      project.tags.forEach((tag) => {
+        const iconEl = iconPool.querySelector(`[data-tag-icon="${tag}"]`);
+        if (!iconEl) return;
+        modalTags.appendChild(iconEl.cloneNode(true));
+      });
+    }
+
+    modal.classList.add('is-visible');
+    document.body.style.overflow = 'hidden';
+  };
+
+  const closeModal = () => {
+    if (!modal) return;
+    modal.classList.remove('is-visible');
+    document.body.style.overflow = '';
+  };
+
+  closeButtons.forEach((btn) => btn.addEventListener('click', closeModal));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeModal();
+  });
+
+  const updateViewMoreButtons = () => {
+    document.querySelectorAll('[data-project-description]').forEach((desc) => {
+      const button = desc.closest('article')?.querySelector('[data-view-more]');
+      if (!button) return;
+      if (desc.scrollHeight > desc.clientHeight + 1) {
+        button.classList.remove('hidden');
+      } else {
+        button.classList.add('hidden');
+      }
+    });
+  };
+
+  document.querySelectorAll('[data-view-more]').forEach((btn) => {
+    btn.addEventListener('click', (event) => {
+      const article = event.currentTarget.closest('article');
+      if (!article) return;
+      const payload = article.getAttribute('data-project');
+      if (!payload) return;
+      try {
+        const project = JSON.parse(payload);
+        openModal(project);
+      } catch (error) {
+        console.error('No se pudo abrir el modal', error);
+      }
+    });
+  });
+
+  const debounce = (fn, delay = 120) => {
+    let timeout;
+    return (...args) => {
+      window.clearTimeout(timeout);
+      timeout = window.setTimeout(() => fn(...args), delay);
+    };
+  };
+
+  const onResize = debounce(updateViewMoreButtons, 150);
+  window.addEventListener('resize', onResize);
+  window.addEventListener('load', updateViewMoreButtons);
+  requestAnimationFrame(updateViewMoreButtons);
 });
 </script>

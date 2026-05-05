@@ -17,8 +17,8 @@ export const projects = [
   },
   {
     title: "Contavo.io",
-    description: "Sistema operativo financiero diseñado para automatizar la gestión contable de empresas modernas. Centraliza datos financieros mediante integraciones robustas con Plaid y Merge.dev para la sincronización con software contable como QuickBooks.",
-    href: "https://contavo.io",
+    description: "Plataforma Fintech para la gestión financiera automatizada. Integra banca en vivo y sincronización con QuickBooks para centralizar la contabilidad, el inventario y los reportes en un dashboard inteligente. Enfocada en la automatización de procesos y seguridad de datos financieros.",
+    href: "",
     preview: "https://contavo.io",
     tags: ["React", "TypeScript", "Supabase"],
     image: "/Contavo.png",
