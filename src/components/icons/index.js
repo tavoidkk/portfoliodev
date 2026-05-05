@@ -18,4 +18,5 @@ export { default as CSS3Icon } from './CSS3.astro';
 export { default as GitIcon } from './Git.astro';
 export { default as DockerIcon } from './Docker.astro';
 export { default as AWSIcon } from './AWS.astro';
+export { default as SupabaseIcon } from './Supabase.astro';
 // Agrega aquí más iconos si tienes otros

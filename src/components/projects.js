@@ -15,4 +15,12 @@ export const projects = [
     tags: ["TypeScript", "NodeJS", "PostgreSQL"],
     image: "/crm.webp",
   },
+  {
+    title: "Contavo.io",
+    description: "Sistema operativo financiero diseñado para automatizar la gestión contable de empresas modernas. Centraliza datos financieros mediante integraciones robustas con Plaid y Merge.dev para la sincronización con software contable como QuickBooks.",
+    href: "https://contavo.io",
+    preview: "https://contavo.io",
+    tags: ["React", "TypeScript", "Supabase"],
+    image: "/Contavo.png",
+  },
 ];
