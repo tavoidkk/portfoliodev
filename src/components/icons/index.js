@@ -12,4 +12,10 @@ export { default as ExpressJSIcon } from './ExpressJS.astro';
 export { default as MySQLIcon } from './MySQL.astro';
 export { default as TypeScriptIcon } from './TypeScript.astro';
 export { default as PostgreSQLIcon } from './PostgreSQL.astro';
+export { default as TailwindCSSIcon } from './TailwindCSS.astro';
+export { default as HTML5Icon } from './HTML5.astro';
+export { default as CSS3Icon } from './CSS3.astro';
+export { default as GitIcon } from './Git.astro';
+export { default as DockerIcon } from './Docker.astro';
+export { default as AWSIcon } from './AWS.astro';
 // Agrega aquí más iconos si tienes otros

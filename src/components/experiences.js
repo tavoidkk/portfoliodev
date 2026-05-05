@@ -1,6 +1,14 @@
 export const experiences = [
   {
-    date: "Actualmente...",
+    date: "Febrero 2026 - Actualmente",
+    title: "AI Product Engineer",
+    company: "Athena Business Group",
+    description:
+      "Especialista en el desarrollo de productos digitales y automatización de procesos de negocio. Me enfoco en la creación de soluciones SaaS y sistemas CRM personalizados, integrando inteligencia artificial generativa y flujos de trabajo automatizados. Experto en conectar ecosistemas de marketing (Meta Ads) con plataformas de gestión y agentes de voz para optimizar la conversión de leads y la eficiencia operativa de empresas a escala internacional.",
+    href: "",
+  },
+  {
+    date: "Septiembre 2024 - Diciembre 2025",
     title: "Lider de proyecto sistema de gestion de logistica",
     company: "CasaVidal Ferreteria C.A",
     description:

@@ -7,6 +7,7 @@ import GmailIcon from "../components/icons/Gmail.astro";
 import TimeLine from '../components/TimeLine.astro';
 import TimelineItem from '../components/TimelineItem.astro';
 import Projects from '../components/Projects.astro';
+import Skills from '../components/Skills.astro';
 import { experiences } from './experiences.js';
 import ExperienceIcon from './icons/Experience.astro';
 import CodeIcon from './icons/Code.astro';
@@ -15,13 +16,16 @@ import PersonIcon from './icons/Person.astro';
 ---
 
 <main class="px-4 md:px-6">
-	<section class="project-animate opacity-0 translate-y-8 transition-all duration-700 w-full max-w-xl mx-auto py-8 md:py-12 lg:py-16">
+	<section class="stagger-item w-full max-w-xl mx-auto py-8 md:py-12 lg:py-16" style="transition-delay: 80ms;">
 		<img class="rounded-full size-16 md:size-20 mb-4" src="/icon.webp" alt="tavo-photo">
 		
 		<div class="flex flex-col sm:flex-row sm:items-center sm:flex-nowrap gap-x-4 gap-y-3 pb-5">
-			<h1 class="text-white text-2xl md:text-3xl lg:text-4xl font-bold flex-1 min-w-0">
-				Hello world!, soy Gustavo Vidal
-			</h1>
+			<div class="flex-1 min-w-0">
+				<span class="terminal-kicker text-cyan-200 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_PROFILE()</span>
+				<h1 class="terminal-title text-white text-2xl md:text-3xl lg:text-4xl">
+					&lt; Hello world!, soy Gustavo Vidal /&gt;
+				</h1>
+			</div>
 			<a 
 				href="https://www.linkedin.com/in/tavovidal"
 				target="_blank" 
@@ -54,10 +58,13 @@ import PersonIcon from './icons/Person.astro';
 	</section>
 
 	<section id="experiencia" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
-		<h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-10 text-white flex gap-x-2 items-center">
-			<ExperienceIcon class="size-6 md:size-7"/>
-			Experiencia Laboral
-		</h2>
+		<div class="mb-6 md:mb-10">
+			<span class="terminal-kicker text-cyan-200 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_EXPERIENCE()</span>
+			<h2 class="terminal-title text-2xl md:text-3xl text-white flex gap-x-2 items-center">
+				<ExperienceIcon class="size-6 md:size-7"/>
+				&lt; Experiencia Laboral /&gt;
+			</h2>
+		</div>
 		<TimeLine>
 			{experiences.map(exp => (
 				<TimelineItem 
@@ -72,18 +79,34 @@ import PersonIcon from './icons/Person.astro';
 	</section>
 
 	<section id="proyectos" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
-		<h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-10 text-white flex gap-x-2 items-center">
-			<CodeIcon class="size-6 md:size-8"/>
-			Proyectos
-		</h2>
+		<div class="mb-6 md:mb-10">
+			<span class="terminal-kicker text-cyan-200 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_PROJECTS()</span>
+			<h2 class="terminal-title text-2xl md:text-3xl text-white flex gap-x-2 items-center">
+				<CodeIcon class="size-6 md:size-8"/>
+				&lt; Proyectos /&gt;
+			</h2>
+		</div>
 		<Projects />
 	</section>
 
-	<section id="about" class="w-full max-w-xl mx-auto my-8 md:my-10 mb-16 px-2 md:pl-4 md:pr-0">
-		<h2 class="text-2xl md:text-3xl font-bold mb-6 md:mb-10 text-white flex gap-x-2 items-center">
-			<PersonIcon class="size-6 md:size-8"/>
-			Sobre mí
-		</h2>
+	<section id="skills" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
+		<div class="mb-6 md:mb-10">
+			<span class="terminal-kicker text-cyan-200 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_SKILLS()</span>
+			<h2 class="terminal-title text-2xl md:text-3xl text-white">
+				&lt; Skills /&gt;
+			</h2>
+		</div>
+		<Skills />
+	</section>
+
+	<section id="about" class="w-full max-w-3xl mx-auto my-8 md:my-10 mb-16 px-2 md:pl-4 md:pr-0">
+		<div class="mb-6 md:mb-10">
+			<span class="terminal-kicker text-cyan-200 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_ABOUT()</span>
+			<h2 class="terminal-title text-2xl md:text-3xl text-white flex gap-x-2 items-center">
+				<PersonIcon class="size-6 md:size-8"/>
+				&lt; Sobre mí /&gt;
+			</h2>
+		</div>
 		<About />
 	</section>
 </main>
@@ -93,37 +116,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        entry.target.classList.remove('opacity-0', 'translate-y-8');
-        entry.target.classList.add('opacity-100', 'translate-y-0');
+        entry.target.classList.add('is-visible');
         observer.unobserve(entry.target);
       }
     });
   }, { threshold: 0.2 });
 
-  document.querySelectorAll('.project-animate').forEach(el => observer.observe(el));
+  document.querySelectorAll('.stagger-item').forEach(el => observer.observe(el));
 });
 </script>
 
 <style>
-@keyframes fade-in-up {
-    from {
-        opacity: 0;
-        transform: translateY(40px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.animate-fade-in-up {
-    animation: fade-in-up 1s cubic-bezier(.39,.575,.565,1) both;
-}
-
-.delay-200 {
-    animation-delay: .2s;
-}
-
 /* Mejoras adicionales para móvil */
 @media (max-width: 640px) {
     h1 {

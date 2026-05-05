@@ -1,0 +1,39 @@
+---
+import * as Icons from './icons/index.js';
+
+const skills = [
+  { name: 'TypeScript', icon: Icons.TypeScriptIcon },
+  { name: 'JavaScript', icon: Icons.JavaScriptIcon },
+  { name: 'React', icon: Icons.ReactIcon },
+  { name: 'Next.js', icon: Icons.NextJSIcon },
+  { name: 'Astro', icon: Icons.AstroIcon },
+  { name: 'Node.js', icon: Icons.NodeJSIcon },
+  { name: 'Express', icon: Icons.ExpressJSIcon },
+  { name: 'Python', icon: Icons.PythonIcon },
+  { name: 'MySQL', icon: Icons.MySQLIcon },
+  { name: 'PostgreSQL', icon: Icons.PostgreSQLIcon },
+  { name: 'Tailwind CSS', icon: Icons.TailwindCSSIcon },
+  { name: 'HTML5', icon: Icons.HTML5Icon },
+  { name: 'CSS3', icon: Icons.CSS3Icon },
+  { name: 'Git', icon: Icons.GitIcon },
+  { name: 'Docker', icon: Icons.DockerIcon },
+  { name: 'AWS', icon: Icons.AWSIcon },
+];
+---
+
+<section class="skills-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+  {skills.map((skill, index) => {
+    const Icon = skill.icon;
+    return (
+      <article
+        class="glass-panel glow-border rounded-xl px-3 py-5 md:px-4 md:py-6 flex flex-col items-center justify-between gap-3 min-h-[120px] stagger-item"
+        style={`transition-delay: ${index * 60}ms;`}
+      >
+        <Icon class="w-7 h-7 md:w-8 md:h-8 text-cyan-200/90" />
+        <span class="text-[11px] md:text-xs uppercase tracking-[0.28em] text-slate-200/70">
+          {skill.name}
+        </span>
+      </article>
+    );
+  })}
+</section>

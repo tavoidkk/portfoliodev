@@ -1,1 +1,59 @@
 @import "tailwindcss";
+
+:root {
+  --bg: #050a16;
+  --panel: rgba(6, 12, 26, 0.72);
+  --panel-border: rgba(120, 210, 255, 0.18);
+  --panel-glow: rgba(120, 210, 255, 0.35);
+  --text: #e6f1ff;
+  --muted: rgba(214, 226, 255, 0.72);
+  --accent: #7cf9ff;
+  --accent-2: #7f6bff;
+  --outline: rgba(255, 255, 255, 0.08);
+  --glass-blur: 18px;
+  --easing-circ-out: cubic-bezier(0, 0.55, 0.45, 1);
+}
+
+body {
+  color: var(--text);
+  background: radial-gradient(1200px 420px at 40% -10%, rgba(124, 249, 255, 0.08), transparent),
+    radial-gradient(900px 380px at 90% 0%, rgba(127, 107, 255, 0.08), transparent),
+    var(--bg);
+}
+
+.glass-panel {
+  background: var(--panel);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+}
+
+.glow-border {
+  transition: border-color 0.3s var(--easing-circ-out), box-shadow 0.3s var(--easing-circ-out);
+}
+
+.glow-border:hover {
+  border-color: var(--panel-glow);
+  box-shadow: 0 0 0 1px rgba(124, 249, 255, 0.4), 0 0 18px rgba(124, 249, 255, 0.18);
+}
+
+.terminal-kicker {
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.08em;
+}
+
+.terminal-title {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+.stagger-item {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.4s var(--easing-circ-out), transform 0.4s var(--easing-circ-out);
+}
+
+.stagger-item.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
