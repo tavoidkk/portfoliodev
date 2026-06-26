@@ -10,7 +10,7 @@ export const projects = [
     {
     title: "CRM con modulos ERP (en ejecucion)",
     description: "Este sistema CRM con módulos ERP está diseñado para gestionar las relaciones con los clientes y optimizar los procesos empresariales.",
-    href: "https://github.com/tavoidkk/casavidal-backend",
+    href: "https://github.com/tavoidkk/casavidal-frontend",
     preview: "",
     tags: ["TypeScript", "NodeJS", "PostgreSQL"],
     image: "/crm.webp",
