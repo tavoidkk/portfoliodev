@@ -8,6 +8,7 @@ import TimeLine from '../components/TimeLine.astro';
 import TimelineItem from '../components/TimelineItem.astro';
 import Projects from '../components/Projects.astro';
 import Skills from '../components/Skills.astro';
+import Certifications from '../components/Certifications.astro';
 import { experiences } from './experiences.js';
 import ExperienceIcon from './icons/Experience.astro';
 import CodeIcon from './icons/Code.astro';
@@ -57,6 +58,25 @@ import PersonIcon from './icons/Person.astro';
 		</nav>
 	</section>
 
+	<div class="w-full max-w-xl mx-auto px-2 md:pl-4 -mt-4 mb-6 md:mb-8 stagger-item" style="transition-delay: 120ms;">
+		<div class="github-terminal-container">
+			<div class="github-terminal-bar">
+				<span class="dot red"></span>
+				<span class="dot yellow"></span>
+				<span class="dot green"></span>
+				<span class="github-terminal-title">tavoidkk@github:~$ git log --graph --all</span>
+			</div>
+			<div class="github-heatmap-wrapper">
+				<img
+					src="https://ghchart.rshah.org/7f6bff/tavoidkk"
+					alt="GitHub contributions"
+					class="github-heatmap"
+					loading="eager"
+				/>
+			</div>
+		</div>
+	</div>
+
 	<section id="experiencia" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
 		<div class="mb-6 md:mb-10">
 			<span class="terminal-kicker text-green-600 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_EXPERIENCE()</span>
@@ -87,6 +107,17 @@ import PersonIcon from './icons/Person.astro';
 			</h2>
 		</div>
 		<Projects />
+	</section>
+
+	<section id="certificaciones" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
+		<div class="mb-6 md:mb-10">
+			<span class="terminal-kicker text-green-600 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_CERTIFICATIONS()</span>
+			<h2 class="terminal-title text-2xl md:text-3xl text-white flex gap-x-2 items-center">
+				<svg class="size-6 md:size-7" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M10 16h5"/><path d="M13.803 21.714A2 2 0 0 1 12 21h-2a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v14a2 2 0 0 1-1.197 1.829z"/><path d="M7 16a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2"/><path d="M17 21v-5"/><path d="M15 16l2 2 2-2"/></svg>
+				&lt; Certificaciones /&gt;
+			</h2>
+		</div>
+		<Certifications />
 	</section>
 
 	<section id="skills" class="w-full max-w-xl mx-auto my-8 md:my-10 px-2 md:pl-4">
@@ -136,5 +167,94 @@ document.addEventListener('DOMContentLoaded', () => {
     h2 {
         line-height: 1.5;
     }
+}
+
+.github-terminal-container {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: rgba(6, 12, 26, 0.98);
+  z-index: 1;
+  border: 1px solid rgba(127, 107, 255, 0.3);
+}
+
+/* Minimal bottom line with gentle pulse */
+.github-terminal-container::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(127, 107, 255, 0.6);
+  box-shadow: 0 0 8px rgba(127, 107, 255, 0.4);
+  animation: line-pulse 1s ease-in-out infinite;
+  z-index: 2;
+}
+
+@keyframes line-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    box-shadow: 0 0 4px rgba(127, 107, 255, 0.2);
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 12px rgba(127, 107, 255, 0.6);
+  }
+}
+
+.github-terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 16px;
+  background: rgba(3, 8, 20, 0.95);
+  border-bottom: 1px solid rgba(127, 107, 255, 0.15);
+}
+
+.github-terminal-bar .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.github-terminal-bar .dot.red { background: #ff5f57; }
+.github-terminal-bar .dot.yellow { background: #febc2e; }
+.github-terminal-bar .dot.green { background: #28c840; }
+
+.github-terminal-title {
+  margin-left: 8px;
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 11px;
+  color: rgba(214, 226, 255, 0.6);
+  letter-spacing: 0.06em;
+}
+
+/* GitHub Heatmap - Larger, no scrollbar, no blur */
+.github-heatmap-wrapper {
+  overflow-x: hidden;
+  overflow-y: hidden;
+  opacity: 0.9;
+  transition: opacity 0.4s ease;
+  background: rgba(6, 12, 26, 0.9);
+  padding: 20px 16px;
+}
+
+.github-heatmap-wrapper:hover {
+  opacity: 1;
+}
+
+.github-heatmap-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
+.github-heatmap {
+  width: 100%;
+  height: auto;
+  display: block;
+  image-rendering: crisp-edges;
+  min-width: 0;
+  transform: scale(1.05);
 }
 </style>
