@@ -1,0 +1,67 @@
+---
+const certifications = [
+  {
+    title: 'Understanding Data Engineering',
+    org: 'DataCamp',
+    date: 'Jun 2026',
+    id: '48,109,800',
+    pdf: '/cert-data-engineering.pdf',
+  },
+  {
+    title: 'Introduction to SQL',
+    org: 'DataCamp',
+    date: 'Jun 2026',
+    id: '41,905,638',
+    pdf: '/cert-intro-sql.pdf',
+  },
+  {
+    title: 'AI-Assisted Coding for Developers',
+    org: 'DataCamp',
+    date: 'Jun 2026',
+    id: '48,075,145',
+    pdf: '/cert-ai-coding.pdf',
+  },
+  {
+    title: 'DESARROLLO CON IA: DE 0 A PRODUCCION',
+    org: 'BIG School',
+    date: 'Mar 2026',
+    id: null,
+    pdf: '/cert-ia-produccion.pdf',
+  },
+  {
+    title: 'DESARROLLO CON IA',
+    org: 'BIG School',
+    date: 'Oct 2025',
+    id: null,
+    pdf: '/cert-ia-big-school.pdf',
+  },
+];
+---
+
+<section class="flex flex-col gap-3 md:gap-4 stagger-item" id="cert-list">
+  {certifications.map((cert, index) => (
+    <article
+      class="glass-panel glow-border rounded-xl px-4 py-4 md:px-6 md:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+      style={`transition-delay: ${index * 60}ms;`}
+    >
+      <div class="flex-1 min-w-0">
+        <h3 class="text-sm md:text-base font-semibold text-slate-100 truncate">
+          {cert.title}
+        </h3>
+        <p class="text-xs md:text-sm text-slate-400 mt-0.5">
+          {cert.org} • {cert.date}
+          {cert.id && <span class="ml-2 text-slate-500">ID: {cert.id}</span>}
+        </p>
+      </div>
+      <a
+        href={cert.pdf}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg border border-cyan-300/20 text-cyan-200 hover:bg-cyan-300/10 hover:border-cyan-300/40 transition whitespace-nowrap"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12H9M12 9v6"/><circle cx="12" cy="12" r="10"/></svg>
+        Ver certificación
+      </a>
+    </article>
+  ))}
+</section>
