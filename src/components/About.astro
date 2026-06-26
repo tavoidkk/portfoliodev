@@ -6,24 +6,37 @@
     id="about-text"
     style="transition-delay: 80ms;">
     <p class="text-sm md:text-base lg:text-lg text-slate-200/80 mb-4 md:mb-6">
-      Desde pequeño he sido amante de la tecnología y siempre quise estudiar algo relacionado. Me apasiona todo lo que tiene que ver con internet y el desarrollo web, porque une lo mejor de ambos mundos.
+      Ingeniero en formación con enfoque en desarrollo <span class="font-semibold text-cyan-300">Fullstack</span>, especializado en <span class="font-semibold text-yellow-300">Frontend</span>. Cuento con 6 meses de experiencia práctica construyendo aplicaciones web con <span class="font-semibold text-yellow-300">JavaScript</span>, <span class="font-semibold text-blue-400">TypeScript</span>, <span class="font-semibold text-cyan-400">React</span>, <span class="font-semibold text-green-400">Node.js</span> y bases de datos <span class="font-semibold text-orange-300">SQL/NoSQL</span>.
     </p>
     <p class="text-sm md:text-base lg:text-lg text-slate-200/80 mb-4 md:mb-6">
-      Disfruto trabajar con <span class="font-semibold text-yellow-300">JavaScript</span> y sus frameworks como <span class="font-semibold text-blue-400">React</span>, además de las bases <span class="font-semibold text-orange-400">HTML</span> y <span class="font-semibold text-blue-300">CSS</span>. También manejo <span class="font-semibold text-green-400">Python</span>, redes, bases de datos SQL y conceptos básicos de AWS.
+      Manejo entornos <span class="font-semibold text-slate-300">Linux</span>, despliegue en plataformas serverless como <span class="font-semibold text-emerald-400">Supabase</span> y <span class="font-semibold text-slate-300">Neon</span>, y metodologías de desarrollo con asistencia de <span class="font-semibold text-purple-400">IA</span>. Actualmente en etapa de tesis universitaria, busco contribuir con soluciones escalables, código limpio y arquitecturas modernas.
     </p>
-    <p class="text-sm md:text-base lg:text-lg text-slate-200/80 mb-4 md:mb-6">
-      Mi mayor logro profesional hasta ahora es estar próximo a culminar mis estudios universitarios, ya que estoy en la etapa de tesis.
+    <p class="text-sm md:text-base lg:text-lg text-slate-200/80 mb-6 md:mb-8">
+      En mi próximo reto profesional, aspiro a seguir consolidando mis habilidades técnicas y aportar valor tangible al crecimiento del equipo y la organización.
     </p>
-    <p class="text-sm md:text-base lg:text-lg text-slate-200/80">
-      En mi próximo trabajo o proyecto, busco seguir mejorando mis habilidades como profesional y contribuir al crecimiento del equipo y la empresa.
-    </p>
+
+    <a
+      href="/cv-gustavo-vidal.pdf"
+      download
+      class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium rounded-lg border border-cyan-300/30 text-cyan-200 bg-cyan-300/5 hover:bg-cyan-300/10 hover:border-cyan-300/60 transition glow-border"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+      Descargar CV
+    </a>
   </div>
+
   <div
     class="w-full md:w-5/12 lg:w-4/12 flex justify-center md:justify-end items-center stagger-item md:pl-6"
     id="about-img"
     style="transition-delay: 160ms;">
-    <div class="about-ring">
-      <div class="about-ring__inner">
+    <div class="terminal-window">
+      <div class="terminal-bar">
+        <span class="dot red"></span>
+        <span class="dot yellow"></span>
+        <span class="dot green"></span>
+        <span class="terminal-title">tavo@profile:~</span>
+      </div>
+      <div class="terminal-body">
         <img src="/icon (3).png" alt="Foto personal" class="w-full h-full object-cover object-center transition duration-500 hover:scale-105" />
       </div>
     </div>
@@ -31,43 +44,77 @@
 </section>
 
 <style>
-.about-ring {
-  width: 200px;
-  height: 200px;
-  border-radius: 999px;
-  padding: 4px;
-  background: conic-gradient(from 120deg, rgba(124, 249, 255, 0.85), rgba(127, 107, 255, 0.45), rgba(124, 249, 255, 0.85));
-  animation: ring-spin 8s linear infinite;
-  box-shadow: 0 0 24px rgba(124, 249, 255, 0.15);
+.terminal-window {
+  width: 240px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(120, 210, 255, 0.25);
+  background: rgba(6, 12, 26, 0.9);
+  box-shadow: 0 0 0 1px rgba(124, 249, 255, 0.08), 0 20px 50px rgba(0, 0, 0, 0.4), 0 0 30px rgba(124, 249, 255, 0.08);
+  transition: border-color 0.3s cubic-bezier(0, 0.55, 0.45, 1), box-shadow 0.3s cubic-bezier(0, 0.55, 0.45, 1);
 }
 
-.about-ring__inner {
-  width: 100%;
-  height: 100%;
+.terminal-window:hover {
+  border-color: rgba(124, 249, 255, 0.45);
+  box-shadow: 0 0 0 1px rgba(124, 249, 255, 0.2), 0 20px 50px rgba(0, 0, 0, 0.45), 0 0 40px rgba(124, 249, 255, 0.15);
+}
+
+.terminal-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: rgba(3, 8, 20, 0.85);
+  border-bottom: 1px solid rgba(120, 210, 255, 0.12);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
   border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.dot.red { background: #ff5f57; }
+.dot.yellow { background: #febc2e; }
+.dot.green { background: #28c840; }
+
+.terminal-title {
+  margin-left: 8px;
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  color: rgba(214, 226, 255, 0.6);
+  letter-spacing: 0.06em;
+}
+
+.terminal-body {
+  width: 100%;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   background: #0b1224;
 }
 
+.terminal-body img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 @media (min-width: 768px) {
-  .about-ring {
-    width: 240px;
-    height: 240px;
+  .terminal-window {
+    width: 280px;
   }
 }
 
 @media (min-width: 1024px) {
-  .about-ring {
-    width: 280px;
-    height: 280px;
+  .terminal-window {
+    width: 300px;
   }
 }
 
 @media (min-width: 1280px) {
-  .about-ring {
+  .terminal-window {
     width: 320px;
-    height: 320px;
   }
 }
-
 </style>
