@@ -19,4 +19,5 @@ export { default as GitIcon } from './Git.astro';
 export { default as DockerIcon } from './Docker.astro';
 export { default as AWSIcon } from './AWS.astro';
 export { default as SupabaseIcon } from './Supabase.astro';
+export { default as DownloadIcon } from './Download.astro';
 // Agrega aquí más iconos si tienes otros
