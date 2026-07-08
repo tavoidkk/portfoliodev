@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #050a16;
+  --bg: #02030a;
   --panel: rgba(6, 12, 26, 0.72);
   --panel-border: rgba(120, 210, 255, 0.18);
   --panel-glow: rgba(120, 210, 255, 0.35);
@@ -16,8 +16,8 @@
 
 body {
   color: var(--text);
-  background: radial-gradient(1200px 420px at 40% -10%, rgba(124, 249, 255, 0.08), transparent),
-    radial-gradient(900px 380px at 90% 0%, rgba(127, 107, 255, 0.08), transparent),
+  background: radial-gradient(1200px 420px at 40% -10%, rgba(124, 249, 255, 0.04), transparent),
+    radial-gradient(900px 380px at 90% 0%, rgba(127, 107, 255, 0.04), transparent),
     var(--bg);
 }
 
