@@ -20,4 +20,15 @@ export { default as DockerIcon } from './Docker.astro';
 export { default as AWSIcon } from './AWS.astro';
 export { default as SupabaseIcon } from './Supabase.astro';
 export { default as DownloadIcon } from './Download.astro';
+export { default as LovableIcon } from './Lovable.astro';
+export { default as OpenCodeIcon } from './OpenCode.astro';
+export { default as CursorIcon } from './Cursor.astro';
+export { default as N8nIcon } from './N8n.astro';
+export { default as MakeIcon } from './Make.astro';
+export { default as ZapierIcon } from './Zapier.astro';
+export { default as MetaIcon } from './Meta.astro';
+export { default as WebhookIcon } from './Webhook.astro';
+export { default as RestApiIcon } from './RestApi.astro';
+export { default as NeonIcon } from './Neon.astro';
+export { default as PrismaIcon } from './Prisma.astro';
 // Agrega aquí más iconos si tienes otros

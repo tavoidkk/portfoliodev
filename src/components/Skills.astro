@@ -1,40 +1,123 @@
 ---
 import * as Icons from './icons/index.js';
 
-const skills = [
+const stackCore = [
   { name: 'TypeScript', icon: Icons.TypeScriptIcon },
   { name: 'JavaScript', icon: Icons.JavaScriptIcon },
   { name: 'React', icon: Icons.ReactIcon },
-//{ name: 'Next.js', icon: Icons.NextJSIcon },
   { name: 'Astro', icon: Icons.AstroIcon },
   { name: 'Node.js', icon: Icons.NodeJSIcon },
-//{ name: 'Express', icon: Icons.ExpressJSIcon },
-//  { name: 'Python', icon: Icons.PythonIcon },
-  { name: 'Supabase', icon: Icons.SupabaseIcon },
-  { name: 'MySQL', icon: Icons.MySQLIcon },
-  { name: 'PostgreSQL', icon: Icons.PostgreSQLIcon },
-  { name: 'Tailwind CSS', icon: Icons.TailwindCSSIcon },
-  { name: 'HTML5', icon: Icons.HTML5Icon },
-  { name: 'CSS3', icon: Icons.CSS3Icon },
+  { name: 'Tailwind', icon: Icons.TailwindCSSIcon },
   { name: 'Git', icon: Icons.GitIcon },
-//{ name: 'Docker', icon: Icons.DockerIcon },
- // { name: 'AWS', icon: Icons.AWSIcon },
+];
+
+const categories = [
+  {
+    title: 'IA & Asistentes',
+    description: 'Código y producto potenciado con inteligencia artificial.',
+    accent: '#7cf9ff',
+    tools: [
+      { name: 'Lovable', icon: Icons.LovableIcon },
+      { name: 'OpenCode', icon: Icons.OpenCodeIcon },
+      { name: 'Cursor', icon: Icons.CursorIcon },
+    ],
+  },
+  {
+    title: 'Automatizaciones',
+    description: 'Flujos sin código y orquestación entre servicios.',
+    accent: '#a78bfa',
+    tools: [
+      { name: 'n8n', icon: Icons.N8nIcon },
+      { name: 'Make', icon: Icons.MakeIcon },
+      { name: 'Zapier', icon: Icons.ZapierIcon },
+    ],
+  },
+  {
+    title: 'Integraciones & Ads',
+    description: 'Conexión entre plataformas de marketing y sistemas internos.',
+    accent: '#34d399',
+    tools: [
+      { name: 'Meta Ads', icon: Icons.MetaIcon },
+      { name: 'Webhooks', icon: Icons.WebhookIcon },
+      { name: 'REST APIs', icon: Icons.RestApiIcon },
+    ],
+  },
+  {
+    title: 'Bases de datos & ORM',
+    description: 'Persistencia serverless y modelado de datos moderno.',
+    accent: '#fbbf24',
+    tools: [
+      { name: 'Supabase', icon: Icons.SupabaseIcon },
+      { name: 'Neon', icon: Icons.NeonIcon },
+      { name: 'Prisma', icon: Icons.PrismaIcon },
+    ],
+  },
 ];
 ---
 
-<section class="skills-grid grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-  {skills.map((skill, index) => {
-    const Icon = skill.icon;
-    return (
+<div class="space-y-6 md:space-y-8">
+  <div
+    class="glass-panel rounded-xl p-3 md:p-4 overflow-x-auto"
+    data-aos="fade-down"
+    data-aos-duration="600"
+  >
+    <div class="flex items-center gap-2 mb-3 px-1">
+      <span class="live-dot" style="--card-accent: #7cf9ff;"></span>
+      <span class="terminal-kicker text-[10px] md:text-xs uppercase text-cyan-200/80">
+        &gt; stack.core()
+      </span>
+    </div>
+    <div class="flex flex-nowrap md:flex-wrap gap-2 md:gap-2.5 min-w-max md:min-w-0">
+      {stackCore.map((tool) => {
+        const Icon = tool.icon;
+        return (
+          <span class="skill-chip" style="--chip-color: #7cf9ff;">
+            <Icon />
+            {tool.name}
+          </span>
+        );
+      })}
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
+    {categories.map((cat, index) => (
       <article
-        class="glass-panel glow-border rounded-xl px-3 py-5 md:px-4 md:py-6 flex flex-col items-center justify-center gap-3 min-h-[120px] stagger-item"
-        style={`transition-delay: ${index * 60}ms;`}
+        class="skill-card glass-panel glow-border rounded-xl p-4 md:p-5"
+        style={`--card-accent: ${cat.accent};`}
+        data-aos="fade-up"
+        data-aos-delay={index * 100}
+        data-aos-duration="700"
       >
-        <Icon class="w-7 h-7 md:w-8 md:h-8 text-cyan-200/90" />
-        <span class="text-[11px] md:text-xs uppercase tracking-[0.28em] text-slate-200/70">
-          {skill.name}
-        </span>
+        <header class="flex items-start justify-between gap-3 mb-3">
+          <div class="min-w-0">
+            <div class="flex items-center gap-2 mb-1.5">
+              <span class="live-dot"></span>
+              <span
+                class="terminal-kicker text-[10px] md:text-xs uppercase"
+                style={`color: ${cat.accent};`}
+              >
+                &gt; {cat.title.toLowerCase().replace(/\s|&/g, '.')}()
+              </span>
+            </div>
+            <p class="text-xs md:text-sm text-slate-200/70 leading-relaxed">
+              {cat.description}
+            </p>
+          </div>
+        </header>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+          {cat.tools.map((tool) => {
+            const Icon = tool.icon;
+            return (
+              <span class="skill-chip" style={`--chip-color: ${cat.accent};`}>
+                <Icon />
+                {tool.name}
+              </span>
+            );
+          })}
+        </div>
       </article>
-    );
-  })}
-</section>
+    ))}
+  </div>
+</div>

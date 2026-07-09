@@ -14,6 +14,7 @@ import ExperienceIcon from './icons/Experience.astro';
 import CodeIcon from './icons/Code.astro';
 import About from './About.astro';
 import PersonIcon from './icons/Person.astro';
+import 'aos/dist/aos.css';
 ---
 
 <main class="px-4 md:px-6">
@@ -155,6 +156,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   document.querySelectorAll('.stagger-item').forEach(el => observer.observe(el));
 });
+</script>
+
+<script>
+import AOS from 'aos';
+
+const initAOS = () => {
+  AOS.init({
+    duration: 700,
+    easing: 'ease-out-cubic',
+    once: true,
+    offset: 60,
+  });
+};
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initAOS);
+} else {
+  initAOS();
+}
+
+document.addEventListener('astro:page-load', initAOS);
 </script>
 
 <style>

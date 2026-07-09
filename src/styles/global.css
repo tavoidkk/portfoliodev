@@ -62,3 +62,137 @@ body {
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ===== Skills: category cards, chips, stack strip ===== */
+
+.skill-card {
+  --accent: var(--accent);
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--card-accent, var(--accent));
+  transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 0.4s cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-color 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform, box-shadow;
+}
+
+.skill-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -60%;
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--card-accent, var(--accent)),
+    transparent
+  );
+  animation: shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skill-card:hover {
+  transform: translateY(-4px);
+  box-shadow:
+    0 12px 36px rgba(0, 0, 0, 0.45),
+    0 0 0 1px color-mix(in oklab, var(--card-accent, var(--accent)) 35%, transparent),
+    0 0 24px color-mix(in oklab, var(--card-accent, var(--accent)) 22%, transparent);
+}
+
+.skill-card .live-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--card-accent, var(--accent));
+  box-shadow: 0 0 8px var(--card-accent, var(--accent));
+  animation: live-pulse 1.6s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.skill-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.02);
+  color: var(--chip-color, #e6f1ff);
+  font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+  will-change: transform;
+  animation: chip-breath 5s ease-in-out infinite;
+  cursor: default;
+}
+
+.skill-chip svg {
+  width: 14px;
+  height: 14px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.3s ease;
+  color: var(--chip-color, rgba(214, 226, 255, 0.7));
+}
+
+.skill-chip:hover {
+  transform: translateY(-2px) scale(1.04);
+  background: rgba(255, 255, 255, 0.06);
+  border-color: var(--chip-color, var(--accent));
+  color: #fff;
+  box-shadow: 0 0 14px color-mix(in oklab, var(--chip-color, var(--accent)) 28%, transparent);
+}
+
+.skill-chip:hover svg {
+  transform: rotate(4deg);
+  color: var(--chip-color, var(--accent));
+}
+
+.skill-chip:nth-child(1) { animation-delay: 0s; }
+.skill-chip:nth-child(2) { animation-delay: 0.5s; }
+.skill-chip:nth-child(3) { animation-delay: 1s; }
+.skill-chip:nth-child(4) { animation-delay: 1.5s; }
+.skill-chip:nth-child(5) { animation-delay: 2s; }
+.skill-chip:nth-child(6) { animation-delay: 2.5s; }
+.skill-chip:nth-child(7) { animation-delay: 3s; }
+
+@keyframes shimmer {
+  0% { left: -60%; }
+  60%, 100% { left: 110%; }
+}
+
+@keyframes live-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 6px var(--card-accent, var(--accent));
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.7;
+    box-shadow: 0 0 14px var(--card-accent, var(--accent));
+  }
+}
+
+@keyframes chip-breath {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-1px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .skill-card::before,
+  .skill-card .live-dot,
+  .skill-chip {
+    animation: none !important;
+  }
+  .skill-card:hover,
+  .skill-chip:hover {
+    transform: none;
+  }
+}
