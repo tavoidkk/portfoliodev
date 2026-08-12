@@ -57,9 +57,8 @@ const categories = [
 
 <div class="space-y-6 md:space-y-8">
   <div
-    class="glass-panel rounded-xl p-3 md:p-4 overflow-x-auto"
-    data-aos="fade-down"
-    data-aos-duration="600"
+    class="glass-panel rounded-xl p-3 md:p-4 overflow-x-auto stagger-item"
+    style="transition-delay: 0ms;"
   >
     <div class="flex items-center gap-2 mb-3 px-1">
       <span class="live-dot" style="--card-accent: #7cf9ff;"></span>
@@ -83,11 +82,8 @@ const categories = [
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-5">
     {categories.map((cat, index) => (
       <article
-        class="skill-card glass-panel glow-border rounded-xl p-4 md:p-5"
-        style={`--card-accent: ${cat.accent};`}
-        data-aos="fade-up"
-        data-aos-delay={index * 100}
-        data-aos-duration="700"
+        class="skill-card glass-panel glow-border rounded-xl p-4 md:p-5 stagger-item"
+        style={`--card-accent: ${cat.accent}; transition-delay: ${index * 100}ms;`}
       >
         <header class="flex items-start justify-between gap-3 mb-3">
           <div class="min-w-0">

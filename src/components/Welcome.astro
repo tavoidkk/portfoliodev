@@ -14,7 +14,6 @@ import ExperienceIcon from './icons/Experience.astro';
 import CodeIcon from './icons/Code.astro';
 import About from './About.astro';
 import PersonIcon from './icons/Person.astro';
-import 'aos/dist/aos.css';
 import GithubHeatmap from './GithubHeatmap.astro';
 ---
 
@@ -154,27 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<script>
-import AOS from 'aos';
-
-const initAOS = () => {
-  AOS.init({
-    duration: 700,
-    easing: 'ease-out-cubic',
-    once: true,
-    offset: 60,
-  });
-};
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initAOS);
-} else {
-  initAOS();
-}
-
-document.addEventListener('astro:page-load', initAOS);
-</script>
-
 <style>
 /* Mejoras adicionales para móvil */
 @media (max-width: 640px) {
@@ -265,14 +243,5 @@ document.addEventListener('astro:page-load', initAOS);
 
 .github-heatmap-wrapper::-webkit-scrollbar {
   display: none;
-}
-
-.github-heatmap {
-  width: 100%;
-  height: auto;
-  display: block;
-  image-rendering: crisp-edges;
-  min-width: 0;
-  transform: scale(1.05);
 }
 </style>
