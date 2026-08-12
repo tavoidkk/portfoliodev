@@ -1,8 +1,9 @@
 ---
-const USERNAME = 'tavoidkk';
+import data from '../data/github.json';
 
 type Day = { iso: string; date: Date; count: number; level: number; col: number; row: number };
 type MonthLabel = { x: number; label: string };
+type RawDay = { date: string; count: number; level: number };
 
 const CELL = 11;
 const GAP = 2;
@@ -18,120 +19,77 @@ const LEVEL_MAP: Record<string, number> = {
   FOURTH_QUARTILE: 4,
 };
 
-const token = import.meta.env.GITHUB_TOKEN;
-
 let total: string | null = null;
+let generatedAt: string | null = null;
 let days: Day[] = [];
 let labels: MonthLabel[] = [];
 let loaded = false;
 let notice: string | null = null;
 
-const buildLabels = (fromMs: number) => {
+const buildDays = (raw: RawDay[]) => {
+  const fromMs = new Date(`${raw[0].date}T00:00:00Z`).getTime();
   const DAY = 86400000;
   let lastMonth = -1;
-  const out: MonthLabel[] = [];
-  for (const d of days) {
-    const diff = Math.round((d.date.getTime() - fromMs) / DAY);
-    d.col = Math.floor(diff / 7);
-    d.row = diff % 7;
-    const month = d.date.getUTCMonth();
+  for (const d of raw) {
+    const date = new Date(`${d.date}T00:00:00Z`);
+    const diff = Math.round((date.getTime() - fromMs) / DAY);
+    const col = Math.floor(diff / 7);
+    const row = diff % 7;
+    days.push({ iso: d.date, date, count: d.count, level: d.level, col, row });
+    const month = date.getUTCMonth();
     if (month !== lastMonth) {
-      out.push({ x: d.col * PITCH, label: d.date.toLocaleDateString('es', { month: 'short', timeZone: 'UTC' }) });
+      labels.push({ x: col * PITCH, label: date.toLocaleDateString('es', { month: 'short', timeZone: 'UTC' }) });
       lastMonth = month;
     }
   }
-  labels = out;
 };
 
-const fromGraphQL = async () => {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8000);
-  const res = await fetch('https://api.github.com/graphql', {
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${token}`,
-      'Content-Type': 'application/json',
-      'User-Agent': 'portfolio',
-    },
-    body: JSON.stringify({
-      query: `query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount contributionLevel}}}}}}`,
-      variables: { login: USERNAME },
-    }),
-    signal: controller.signal,
-  });
-  clearTimeout(timer);
-  const json = await res.json();
-  const cal = json?.data?.user?.contributionsCollection?.contributionCalendar;
-  if (!cal?.weeks) return false;
-  const flat = cal.weeks.flatMap((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: string }[] }) => w.contributionDays);
-  if (!flat.length) return false;
-  total = String(cal.totalContributions);
-  for (const d of flat) {
-    const date = new Date(d.date + 'T00:00:00Z');
-    days.push({
-      iso: d.date,
-      date,
-      count: d.contributionCount,
-      level: LEVEL_MAP[d.contributionLevel] ?? 0,
-      col: 0,
-      row: 0,
+const jsonData = data as { total?: number; generatedAt?: string; days?: RawDay[] };
+if (jsonData?.days && jsonData.days.length > 0) {
+  total = String(jsonData.total ?? '');
+  generatedAt = jsonData.generatedAt ?? null;
+  buildDays(jsonData.days);
+  loaded = true;
+} else if (import.meta.env.GITHUB_TOKEN) {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+    const res = await fetch('https://api.github.com/graphql', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${import.meta.env.GITHUB_TOKEN}`,
+        'Content-Type': 'application/json',
+        'User-Agent': 'portfolio',
+      },
+      body: JSON.stringify({
+        query: `query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount contributionLevel}}}}}}`,
+        variables: { login: 'tavoidkk' },
+      }),
+      signal: controller.signal,
     });
-  }
-  days.sort((a, b) => a.date.getTime() - b.date.getTime());
-  buildLabels(new Date(flat[0].date + 'T00:00:00Z').getTime());
-  return true;
-};
-
-const fromHTML = async () => {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 8000);
-  const res = await fetch(`https://github.com/users/${USERNAME}/contributions`, {
-    headers: { 'User-Agent': 'Mozilla/5.0 (portfolio)', 'Accept': 'text/html' },
-    signal: controller.signal,
-  });
-  clearTimeout(timer);
-  const html = await res.text();
-  const totalMatch = html.match(/<h2[^>]*>\s*([\d,]+)\s*contributions\s+in the last year/i);
-  const fromMatch = html.match(/data-from="([^"]+)"/);
-  if (!fromMatch) return false;
-  const fromMs = new Date(fromMatch[1].slice(0, 10) + 'T00:00:00Z').getTime();
-  if (Number.isNaN(fromMs)) return false;
-  const cellRe = /data-date="(\d{4}-\d{2}-\d{2})"[^>]*data-level="([0-4])"/g;
-  const seen = new Set<string>();
-  let m: RegExpExecArray | null;
-  while ((m = cellRe.exec(html)) !== null) {
-    if (seen.has(m[1])) continue;
-    seen.add(m[1]);
-    const date = new Date(m[1] + 'T00:00:00Z');
-    days.push({ iso: m[1], date, count: 0, level: Number(m[2]), col: 0, row: 0 });
-  }
-  if (totalMatch) total = totalMatch[1].replace(/,/g, '');
-  days.sort((a, b) => a.date.getTime() - b.date.getTime());
-  buildLabels(fromMs);
-  return true;
-};
-
-if (token) {
-  try {
-    loaded = await fromGraphQL();
-  } catch {
-    loaded = false;
-  }
-  if (!loaded) {
-    try {
-      loaded = await fromHTML();
-    } catch {
-      loaded = false;
+    clearTimeout(timer);
+    const json = await res.json();
+    const cal = json?.data?.user?.contributionsCollection?.contributionCalendar;
+    if (cal?.weeks) {
+      const flat = cal.weeks.flatMap((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: string }[] }) =>
+        w.contributionDays.map((d) => ({
+          date: d.date,
+          count: d.contributionCount,
+          level: LEVEL_MAP[d.contributionLevel] ?? 0,
+        }))
+      );
+      if (flat.length) {
+        total = String(cal.totalContributions);
+        buildDays(flat);
+        loaded = true;
+      }
     }
-    if (loaded) notice = 'No se pudo consultar la API; mostrando solo contribuciones públicas.';
-  }
-} else {
-  try {
-    loaded = await fromHTML();
   } catch {
     loaded = false;
   }
-  notice = 'Para incluir contribuciones privadas, añade GITHUB_TOKEN a .env';
+  if (!loaded) notice = 'No se pudo cargar el heatmap desde la API.';
+} else {
+  notice = 'Faltan los datos locales: ejecuta `node scripts/refresh-contributions.mjs`.';
 }
 
 const width = COLUMNS * PITCH - GAP;
@@ -140,8 +98,8 @@ const LABEL_H = 12;
 const LEGEND_H = 14;
 const svgHeight = LABEL_H + gridHeight + LEGEND_H;
 
-const formatTooltip = (iso: string, level: number, count: number) => {
-  const date = new Date(iso + 'T00:00:00Z').toLocaleDateString('es', {
+const formatTooltip = (iso: string, count: number) => {
+  const date = new Date(`${iso}T00:00:00Z`).toLocaleDateString('es', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -149,6 +107,12 @@ const formatTooltip = (iso: string, level: number, count: number) => {
   });
   if (count === 0) return `${date} · Sin contribuciones`;
   return `${count} ${count === 1 ? 'contribución' : 'contribuciones'} · ${date}`;
+};
+
+const formatUpdated = (iso: string) => {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return `Actualizado el ${date.toLocaleDateString('es', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })}`;
 };
 ---
 
@@ -180,7 +144,7 @@ const formatTooltip = (iso: string, level: number, count: number) => {
               rx={2}
               fill={COLORS[day.level]}
             >
-              <title>{formatTooltip(day.iso, day.level, day.count)}</title>
+              <title>{formatTooltip(day.iso, day.count)}</title>
             </rect>
           ))}
         </g>
@@ -193,6 +157,9 @@ const formatTooltip = (iso: string, level: number, count: number) => {
         ))}
         <span>Más</span>
       </div>
+      {generatedAt && formatUpdated(generatedAt) && (
+        <p class="github-heatmap-updated">{formatUpdated(generatedAt)}</p>
+      )}
     </>
   ) : (
     <p class="github-heatmap-error">No se pudo cargar el gráfico de contribuciones.</p>
@@ -220,6 +187,14 @@ const formatTooltip = (iso: string, level: number, count: number) => {
     color: rgba(214, 226, 255, 0.45);
     text-align: right;
     margin: 6px 0 0;
+  }
+
+  .github-heatmap-updated {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    color: rgba(214, 226, 255, 0.4);
+    text-align: right;
+    margin: 4px 0 0;
   }
 
   .github-heatmap-legend {
