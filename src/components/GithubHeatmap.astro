@@ -1,0 +1,257 @@
+---
+const USERNAME = 'tavoidkk';
+
+type Day = { iso: string; date: Date; count: number; level: number; col: number; row: number };
+type MonthLabel = { x: number; label: string };
+
+const CELL = 11;
+const GAP = 2;
+const PITCH = CELL + GAP;
+const COLUMNS = 53;
+
+const COLORS = ['rgba(255, 255, 255, 0.06)', '#3b2f6e', '#5b47ad', '#7f6bff', '#c6b6ff'];
+const LEVEL_MAP: Record<string, number> = {
+  NONE: 0,
+  FIRST_QUARTILE: 1,
+  SECOND_QUARTILE: 2,
+  THIRD_QUARTILE: 3,
+  FOURTH_QUARTILE: 4,
+};
+
+const token = import.meta.env.GITHUB_TOKEN;
+
+let total: string | null = null;
+let days: Day[] = [];
+let labels: MonthLabel[] = [];
+let loaded = false;
+let notice: string | null = null;
+
+const buildLabels = (fromMs: number) => {
+  const DAY = 86400000;
+  let lastMonth = -1;
+  const out: MonthLabel[] = [];
+  for (const d of days) {
+    const diff = Math.round((d.date.getTime() - fromMs) / DAY);
+    d.col = Math.floor(diff / 7);
+    d.row = diff % 7;
+    const month = d.date.getUTCMonth();
+    if (month !== lastMonth) {
+      out.push({ x: d.col * PITCH, label: d.date.toLocaleDateString('es', { month: 'short', timeZone: 'UTC' }) });
+      lastMonth = month;
+    }
+  }
+  labels = out;
+};
+
+const fromGraphQL = async () => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  const res = await fetch('https://api.github.com/graphql', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      'User-Agent': 'portfolio',
+    },
+    body: JSON.stringify({
+      query: `query($login:String!){user(login:$login){contributionsCollection{contributionCalendar{totalContributions weeks{contributionDays{date contributionCount contributionLevel}}}}}}`,
+      variables: { login: USERNAME },
+    }),
+    signal: controller.signal,
+  });
+  clearTimeout(timer);
+  const json = await res.json();
+  const cal = json?.data?.user?.contributionsCollection?.contributionCalendar;
+  if (!cal?.weeks) return false;
+  const flat = cal.weeks.flatMap((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: string }[] }) => w.contributionDays);
+  if (!flat.length) return false;
+  total = String(cal.totalContributions);
+  for (const d of flat) {
+    const date = new Date(d.date + 'T00:00:00Z');
+    days.push({
+      iso: d.date,
+      date,
+      count: d.contributionCount,
+      level: LEVEL_MAP[d.contributionLevel] ?? 0,
+      col: 0,
+      row: 0,
+    });
+  }
+  days.sort((a, b) => a.date.getTime() - b.date.getTime());
+  buildLabels(new Date(flat[0].date + 'T00:00:00Z').getTime());
+  return true;
+};
+
+const fromHTML = async () => {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 8000);
+  const res = await fetch(`https://github.com/users/${USERNAME}/contributions`, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (portfolio)', 'Accept': 'text/html' },
+    signal: controller.signal,
+  });
+  clearTimeout(timer);
+  const html = await res.text();
+  const totalMatch = html.match(/<h2[^>]*>\s*([\d,]+)\s*contributions\s+in the last year/i);
+  const fromMatch = html.match(/data-from="([^"]+)"/);
+  if (!fromMatch) return false;
+  const fromMs = new Date(fromMatch[1].slice(0, 10) + 'T00:00:00Z').getTime();
+  if (Number.isNaN(fromMs)) return false;
+  const cellRe = /data-date="(\d{4}-\d{2}-\d{2})"[^>]*data-level="([0-4])"/g;
+  const seen = new Set<string>();
+  let m: RegExpExecArray | null;
+  while ((m = cellRe.exec(html)) !== null) {
+    if (seen.has(m[1])) continue;
+    seen.add(m[1]);
+    const date = new Date(m[1] + 'T00:00:00Z');
+    days.push({ iso: m[1], date, count: 0, level: Number(m[2]), col: 0, row: 0 });
+  }
+  if (totalMatch) total = totalMatch[1].replace(/,/g, '');
+  days.sort((a, b) => a.date.getTime() - b.date.getTime());
+  buildLabels(fromMs);
+  return true;
+};
+
+if (token) {
+  try {
+    loaded = await fromGraphQL();
+  } catch {
+    loaded = false;
+  }
+  if (!loaded) {
+    try {
+      loaded = await fromHTML();
+    } catch {
+      loaded = false;
+    }
+    if (loaded) notice = 'No se pudo consultar la API; mostrando solo contribuciones públicas.';
+  }
+} else {
+  try {
+    loaded = await fromHTML();
+  } catch {
+    loaded = false;
+  }
+  notice = 'Para incluir contribuciones privadas, añade GITHUB_TOKEN a .env';
+}
+
+const width = COLUMNS * PITCH - GAP;
+const gridHeight = 7 * PITCH - GAP;
+const LABEL_H = 12;
+const LEGEND_H = 14;
+const svgHeight = LABEL_H + gridHeight + LEGEND_H;
+
+const formatTooltip = (iso: string, level: number, count: number) => {
+  const date = new Date(iso + 'T00:00:00Z').toLocaleDateString('es', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+  if (count === 0) return `${date} · Sin contribuciones`;
+  return `${count} ${count === 1 ? 'contribución' : 'contribuciones'} · ${date}`;
+};
+---
+
+{
+  loaded ? (
+    <>
+      <div class="github-heatmap-total">
+        {total ? `${total} contribuciones en el último año` : 'Actividad de GitHub'}
+      </div>
+      <svg
+        class="github-heatmap"
+        viewBox={`0 0 ${width} ${svgHeight}`}
+        role="img"
+        aria-label="Gráfico de contribuciones de GitHub del último año"
+      >
+        <g class="gh-month">
+          {labels.map(l => (
+            <text key={l.x} x={l.x} y={9}>{l.label}</text>
+          ))}
+        </g>
+        <g transform={`translate(0, ${LABEL_H})`}>
+          {days.map(day => (
+            <rect
+              key={day.iso}
+              x={day.col * PITCH}
+              y={day.row * PITCH}
+              width={CELL}
+              height={CELL}
+              rx={2}
+              fill={COLORS[day.level]}
+            >
+              <title>{formatTooltip(day.iso, day.level, day.count)}</title>
+            </rect>
+          ))}
+        </g>
+      </svg>
+      {notice && <p class="github-heatmap-notice">{notice}</p>}
+      <div class="github-heatmap-legend">
+        <span>Menos</span>
+        {[1, 2, 3, 4].map(level => (
+          <i key={level} style={`background: ${COLORS[level]}`}></i>
+        ))}
+        <span>Más</span>
+      </div>
+    </>
+  ) : (
+    <p class="github-heatmap-error">No se pudo cargar el gráfico de contribuciones.</p>
+  )
+}
+
+<style>
+  .github-heatmap {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .github-heatmap-total {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11px;
+    color: rgba(214, 226, 255, 0.6);
+    text-align: right;
+    margin-bottom: 10px;
+  }
+
+  .github-heatmap-notice {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    color: rgba(214, 226, 255, 0.45);
+    text-align: right;
+    margin: 6px 0 0;
+  }
+
+  .github-heatmap-legend {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    margin-top: 8px;
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 10px;
+    color: rgba(214, 226, 255, 0.5);
+  }
+
+  .github-heatmap-legend i {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    display: inline-block;
+  }
+
+  .github-heatmap-error {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 12px;
+    color: rgba(214, 226, 255, 0.5);
+    text-align: center;
+    padding: 24px 0;
+    margin: 0;
+  }
+
+  .gh-month text {
+    font-size: 8px;
+    fill: rgba(214, 226, 255, 0.45);
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+</style>

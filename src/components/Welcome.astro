@@ -15,6 +15,7 @@ import CodeIcon from './icons/Code.astro';
 import About from './About.astro';
 import PersonIcon from './icons/Person.astro';
 import 'aos/dist/aos.css';
+import GithubHeatmap from './GithubHeatmap.astro';
 ---
 
 <main class="px-4 md:px-6">
@@ -68,12 +69,7 @@ import 'aos/dist/aos.css';
 				<span class="github-terminal-title">tavoidkk@github:~$ git log --graph --all</span>
 			</div>
 			<div class="github-heatmap-wrapper">
-				<img
-					src="https://ghchart.rshah.org/7f6bff/tavoidkk"
-					alt="GitHub contributions"
-					class="github-heatmap"
-					loading="eager"
-				/>
+				<GithubHeatmap />
 			</div>
 		</div>
 	</div>
