@@ -12,7 +12,7 @@
     background-image:
       linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
       linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-    background-size: 56px 56px;
+    background-size: 72px 72px;
     background-position: -1px -1px;
     -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%);
     mask-image: radial-gradient(ellipse 80% 70% at 50% 45%, #000 30%, transparent 85%);
@@ -47,7 +47,6 @@
 
   const PARTICLE_COUNT = 50;
   const LINK_DISTANCE = 110;
-  const TRAIL_FADE = 'rgba(2, 3, 10, 0.06)';
   const LINK_COLOR = '255, 255, 255';
 
   function init() {
@@ -71,8 +70,8 @@
       y: Math.random() * height,
       vx: rand(-0.15, 0.15),
       vy: rand(-0.15, 0.15),
-      r: rand(1.2, 2.2),
-      a: rand(0.7, 0.95),
+      r: rand(0.7, 1.4),
+      a: rand(0.35, 0.55),
     });
 
     const resize = () => {
@@ -86,8 +85,7 @@
       if (particles.length === 0) {
         particles = Array.from({ length: PARTICLE_COUNT }, makeParticle);
       }
-      ctx.fillStyle = '#02030a';
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
     };
 
     const drawLinks = () => {
@@ -97,7 +95,7 @@
           const dy = particles[i].y - particles[j].y;
           const dist = Math.hypot(dx, dy);
           if (dist < LINK_DISTANCE) {
-            const alpha = (1 - dist / LINK_DISTANCE) * 0.06;
+            const alpha = (1 - dist / LINK_DISTANCE) * 0.035;
             ctx.strokeStyle = `rgba(${LINK_COLOR}, ${alpha})`;
             ctx.lineWidth = 1;
             ctx.beginPath();
@@ -119,16 +117,16 @@
         if (p.y < -10) p.y = height + 10;
         else if (p.y > height + 10) p.y = -10;
 
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
         glow.addColorStop(0, `rgba(255, 255, 255, ${p.a})`);
-        glow.addColorStop(0.4, `rgba(255, 255, 255, ${p.a * 0.35})`);
+        glow.addColorStop(0.3, `rgba(255, 255, 255, ${p.a * 0.18})`);
         glow.addColorStop(1, 'rgba(255, 255, 255, 0)');
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+        ctx.arc(p.x, p.y, p.r * 3, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(1, p.a + 0.1)})`;
+        ctx.fillStyle = `rgba(255, 255, 255, ${p.a})`;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
         ctx.fill();
@@ -136,8 +134,7 @@
     };
 
     const loop = () => {
-      ctx.fillStyle = TRAIL_FADE;
-      ctx.fillRect(0, 0, width, height);
+      ctx.clearRect(0, 0, width, height);
       drawLinks();
       drawParticles();
       rafId = requestAnimationFrame(loop);
