@@ -44,3 +44,27 @@ All commands are run from the root of the project, from a terminal:
 ## 👀 Want to learn more?
 
 Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+
+## GitHub contribution heatmap
+
+The heatmap on the homepage is rendered from a static snapshot stored in
+[`src/data/github.json`](src/data/github.json). This keeps the full
+contributions count (public + private) visible for every visitor without
+exposing any API token to the client.
+
+- **[`.github/workflows/refresh-contributions.yml`](.github/workflows/refresh-contributions.yml)**
+  runs daily at 04:00 UTC (and can be triggered manually with `workflow_dispatch`)
+  to regenerate `github.json` and commit the result.
+- The workflow reads a repository secret named `GH_CONTRIB_TOKEN` (a GitHub
+  Personal Access Token with `read:user` scope). See the repository
+  **Settings → Secrets and variables → Actions**.
+- To refresh the data locally, run:
+  ```sh
+  GITHUB_TOKEN=ghp_xxx node scripts/refresh-contributions.mjs
+  ```
+
+`GithubHeatmap.astro` always prefers `src/data/github.json` at build time. If
+the file is missing (e.g. a fresh clone before the first refresh) and a
+`GITHUB_TOKEN` is available in the environment, it falls back to fetching the
+GitHub GraphQL API directly.
+
