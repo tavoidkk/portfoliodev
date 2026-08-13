@@ -4,7 +4,7 @@ export const experiences = [
     title: "AI Product Engineer",
     company: "Athena Business Group",
     description:
-      "Especialista en el desarrollo de productos digitales y automatización de procesos de negocio. Me enfoco en la creación de soluciones SaaS y sistemas CRM personalizados, integrando inteligencia artificial generativa y flujos de trabajo automatizados. Experto en conectar ecosistemas de marketing (Meta Ads) con plataformas de gestión y agentes de voz para optimizar la conversión de leads y la eficiencia operativa de empresas a escala internacional.",
+      "Mi enfoque abarca desde la arquitectura de software hasta la automatización de crecimiento. Diseño ecosistemas integrados donde conecto la captación de prospectos en frío mediante extracción de bases de datos públicas y plataformas como Apollo para nutrir flujos de ventas potenciados por agentes de voz IA y Cold Email. A nivel de infraestructura, mantengo la integridad mediante un Data Vault central con APIs REST hacia el CRM, centralizo la autenticación con Authentik y acelero el desarrollo de aplicaciones SaaS",
     href: "https://athenabusiness.group/",
   },
   {
@@ -16,11 +16,11 @@ export const experiences = [
     href: "",
   },
   {
-    date: "Septiembre 2021 - Actualmente",
+    date: "Septiembre 2021 - Julio 2026",
     title: "Experiencia en desarrollo de software y web",
     company: "Universidad Rafael Belloso Chacin",
     description:
-      "Desde 2020, he desarrollado varios proyectos personales y académicos, adquiriendo experiencia en el diseño, desarrollo e implementación de aplicaciones web. He trabajado con tecnologías como Python, JavaScript, React, y MySQL, aplicando buenas prácticas de desarrollo, patrones de diseño y principios de arquitectura de software. Cuento con experiencia desarrollando software, aunque aún no he trabajado en una empresa.",
+      "Desde 2021, he desarrollado varios proyectos personales y académicos, adquiriendo experiencia en el diseño, desarrollo e implementación de aplicaciones web. He trabajado con tecnologías como Python, JavaScript, React, y MySQL, aplicando buenas prácticas de desarrollo, patrones de diseño y principios de arquitectura de software. Cuento con experiencia desarrollando software, aunque aún no he trabajado en una empresa.",
     href: "https://www.urbe.edu/",
   },
 ];
