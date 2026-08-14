@@ -23,4 +23,12 @@ export const projects = [
     tags: ["React", "TypeScript", "Supabase"],
     image: "/Contavo.png",
   },
+  {
+    title: "LLM Radar",
+    description: "Plataforma en tiempo real para el monitoreo, comparación y filtrado dinámico de modelos de lenguaje de gran escala (LLMs). Cruza métricas reales de rendimiento e inteligencia con infraestructura y precios en vivo, permitiendo analizar relaciones de costo-eficiencia mediante arquitecturas de alta disponibilidad.",
+    href: "https://github.com/tavoidkk/llm-radar",
+    preview: "https://llm-radar-steel.vercel.app",
+    tags: ["NextJS", "NodeJS", "Supabase"],
+    image: "/llm-radar.png",
+  },
 ];
