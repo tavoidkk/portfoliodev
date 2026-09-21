@@ -1,3 +1,5 @@
+const BASE = import.meta.env.BASE_URL;
+
 export const projects = [
   {
     title: "API REST",
@@ -5,7 +7,7 @@ export const projects = [
     href: "https://github.com/tavoidkk/api-rest-test-js",
     preview: "",
     tags: ["NodeJS", "ExpressJS", "MySQL"],
-    image: "/svgl.webp",
+    image: `${BASE}svgl.webp`,
   },
     {
     title: "CRM con modulos ERP (en ejecucion)",
@@ -13,7 +15,7 @@ export const projects = [
     href: "https://github.com/tavoidkk/casavidal-frontend",
     preview: "",
     tags: ["TypeScript", "NodeJS", "PostgreSQL"],
-    image: "/crm.webp",
+    image: `${BASE}crm.webp`,
   },
   {
     title: "Contavo.io",
@@ -21,7 +23,7 @@ export const projects = [
     href: "",
     preview: "https://contavo.io",
     tags: ["React", "TypeScript", "Supabase"],
-    image: "/Contavo.png",
+    image: `${BASE}Contavo.png`,
   },
   {
     title: "LLM Radar",
@@ -29,6 +31,6 @@ export const projects = [
     href: "https://github.com/tavoidkk/llm-radar",
     preview: "https://llm-radar-steel.vercel.app",
     tags: ["NextJS", "NodeJS", "Supabase"],
-    image: "/llm-radar.png",
+    image: `${BASE}llm-radar.png`,
   },
 ];

@@ -1,25 +1,26 @@
 ---
+const BASE = import.meta.env.BASE_URL;
 const certifications = [
   {
     title: 'Understanding Data Engineering',
     org: 'DataCamp',
     date: 'Jun 2026',
     id: '48,109,800',
-    pdf: '/cert-data-engineering.pdf',
+    pdf: `${BASE}cert-data-engineering.pdf`,
   },
   {
     title: 'Introduction to SQL',
     org: 'DataCamp',
     date: 'Jun 2026',
     id: '41,905,638',
-    pdf: '/cert-intro-sql.pdf',
+    pdf: `${BASE}cert-intro-sql.pdf`,
   },
   {
     title: 'AI-Assisted Coding for Developers',
     org: 'DataCamp',
     date: 'Jun 2026',
     id: '48,075,145',
-    pdf: '/cert-ai-coding.pdf',
+    pdf: `${BASE}cert-ai-coding.pdf`,
   },
   // {
   //   title: 'DESARROLLO CON IA: DE 0 A PRODUCCION',
@@ -33,7 +34,7 @@ const certifications = [
     org: 'BIG School',
     date: 'Oct 2025',
     id: null,
-    pdf: '/cert-ia-big-school.pdf',
+    pdf: `${BASE}cert-ia-big-school.pdf`,
   },
 ];
 ---
