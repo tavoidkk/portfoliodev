@@ -2,12 +2,25 @@ const BASE = import.meta.env.BASE_URL;
 
 export const projects = [
   {
+    title: "Listamarilla",
+    description: "SaaS multi-tenant y PWA para juntas de condominio que permite crear directorios de prestadores de servicios por edificio. Incluye portales personalizados para vecinos, gestión de contactos y categorías, autenticación, branding por organización, códigos QR y un panel administrativo.",
+    href: "https://github.com/tavoidkk/listamarilla",
+    preview: "https://listamarilla.vercel.app",
+    tags: ["NextJS", "TypeScript", "Supabase"],
+    image: `${BASE}listamarilla.jpg`,
+    featured: true,
+    status: "PWA disponible",
+    accent: "#facc15",
+  },
+  {
     title: "API REST",
     description: "Esta es una API REST construida como examen práctico, utilizando Node.js, Express, MySQL y Sequelize, con autenticación por JWT, control de acceso por roles y un CRUD completo de tareas.",
     href: "https://github.com/tavoidkk/api-rest-test-js",
     preview: "",
     tags: ["NodeJS", "ExpressJS", "MySQL"],
     image: `${BASE}svgl.webp`,
+    status: "Código disponible",
+    accent: "#22d3ee",
   },
     {
     title: "CRM con modulos ERP (en ejecucion)",
@@ -16,6 +29,8 @@ export const projects = [
     preview: "",
     tags: ["TypeScript", "NodeJS", "PostgreSQL"],
     image: `${BASE}crm.webp`,
+    status: "Código disponible",
+    accent: "#a78bfa",
   },
   {
     title: "Contavo.io",
@@ -24,6 +39,8 @@ export const projects = [
     preview: "https://contavo.io",
     tags: ["React", "TypeScript", "Supabase"],
     image: `${BASE}Contavo.png`,
+    status: "Producto web",
+    accent: "#f58742",
   },
   {
     title: "LLM Radar",
@@ -32,5 +49,7 @@ export const projects = [
     preview: "https://llm-radar-steel.vercel.app",
     tags: ["NextJS", "NodeJS", "Supabase"],
     image: `${BASE}llm-radar.png`,
+    status: "Demo disponible",
+    accent: "#60a5fa",
   },
 ];

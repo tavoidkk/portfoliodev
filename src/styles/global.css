@@ -46,6 +46,38 @@ body {
     0 0 20px rgba(127, 107, 255, 0.3) !important;
 }
 
+/* Resplandor interior que sigue al cursor en todas las tarjetas */
+:where(.glow-border, .project-card) {
+  --hover-glow-color: var(--project-accent, var(--card-accent, var(--accent)));
+  position: relative;
+  isolation: isolate;
+}
+
+:where(.glow-border, .project-card)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    280px circle at var(--hover-x, 50%) var(--hover-y, 50%),
+    color-mix(in oklab, var(--hover-glow-color) 18%, transparent),
+    transparent 72%
+  );
+  transition: opacity 350ms ease;
+}
+
+:where(.glow-border, .project-card):hover::after {
+  opacity: 1;
+}
+
+:where(.glow-border, .project-card) > * {
+  position: relative;
+  z-index: 1;
+}
+
 .terminal-kicker {
   font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: 0.08em;
@@ -198,5 +230,9 @@ body {
   .skill-card:hover,
   .skill-chip:hover {
     transform: none;
+  }
+
+  :where(.glow-border, .project-card)::after {
+    display: none;
   }
 }

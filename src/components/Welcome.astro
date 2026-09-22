@@ -15,6 +15,7 @@ import CodeIcon from './icons/Code.astro';
 import About from './About.astro';
 import PersonIcon from './icons/Person.astro';
 import GithubHeatmap from './GithubHeatmap.astro';
+import DownloadIcon from './icons/Download.astro';
 ---
 
 <main class="px-4 md:px-6">
@@ -25,16 +26,9 @@ import GithubHeatmap from './GithubHeatmap.astro';
 			<div class="flex-1 min-w-0">
 				<span class="terminal-kicker text-green-600 text-[10px] md:text-xs uppercase">&gt; SYSTEM.INIT_PROFILE()</span>
 				<h1 class="terminal-title text-white text-2xl md:text-3xl lg:text-4xl">
-					&lt; Hello world!, soy Gustavo Vidal /&gt;
+					&lt; Hello world!, soy Gustavo Vidalㅤ/&gt;
 				</h1>
 			</div>
-			<a 
-				href="https://www.linkedin.com/in/tavovidal"
-				target="_blank" 
-				rel="noopener noreferrer"
-				class="inline-flex items-center">
-				<Badge>DISPONIBLE PARA TRABAJAR</Badge>
-			</a>
 		</div>
 
 		<h2 class="text-base md:text-lg lg:text-xl opacity-80 text-wrap max-w-full">
@@ -43,18 +37,22 @@ import GithubHeatmap from './GithubHeatmap.astro';
 			<span class="opacity-80">donde las ideas cobran vida.</span>
 		</h2>
 
-		<nav class="flex flex-col sm:flex-row gap-3 md:gap-4 mt-6 md:mt-4">
+		<nav class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 md:gap-2.5 mt-6 md:mt-5" aria-label="Enlaces profesionales">
 			<Pill href="https://www.linkedin.com/in/tavovidal">
-				<LinkedInIcon class="size-4 md:size-6"/>
+				<LinkedInIcon class="size-4 md:size-5"/>
 				LinkedIn
 			</Pill>
 			<Pill href="https://github.com/tavoidkk">
-				<GitHubIcon class="size-4 md:size-6"/>
+				<GitHubIcon class="size-4 md:size-5"/>
 				GitHub
 			</Pill>
 			<Pill href="mailto:gvidal0307@gmail.com">
-				<GmailIcon class="size-4 md:size-6"/>
-				<span class="truncate">gvidal0307@gmail.com</span>
+				<GmailIcon class="size-4 md:size-5"/>
+				<span class="truncate"><span class="sm:hidden">Correo</span><span class="hidden sm:inline">gvidal0307@gmail.com</span></span>
+			</Pill>
+			<Pill href={`${import.meta.env.BASE_URL}cv-gustavo-vidal.pdf`} download="cv-gustavo-vidal.pdf">
+				<DownloadIcon class="size-4 md:size-5"/>
+				Descargar CV
 			</Pill>
 		</nav>
 	</section>
@@ -82,8 +80,9 @@ import GithubHeatmap from './GithubHeatmap.astro';
 			</h2>
 		</div>
 		<TimeLine>
-			{experiences.map(exp => (
+			{experiences.map((exp, index) => (
 				<TimelineItem 
+					index={index + 1}
 					date={exp.date}
 					title={exp.title}
 					company={exp.company}

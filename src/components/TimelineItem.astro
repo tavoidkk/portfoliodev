@@ -1,76 +1,43 @@
 ---
-interface Props {
-  date: string;
-  title: string;
-  company: string;
-  description: string;
-  href: string;
-  tags?: string[];
-}
-
-const { date, title, company, description, href, tags } = Astro.props;
-
-const tagColors = {
-  'JavaScript': 'bg-[#F7DF1E] text-black dark:bg-[#F7DF1E] dark:text-black',
-  'React': 'bg-[#61DAFB] text-black dark:bg-[#61DAFB] dark:text-black',
-  'MySQL': 'bg-[#61DAFB] text-black dark:bg-[#61DAFB] dark:text-black',
-  'MongoDB': 'bg-[#47A248] text-white dark:bg-[#47A248] dark:text-white',
-  'Git': 'bg-[#F05033] text-white dark:bg-[#F05033] dark:text-white',
-  'HTML': 'bg-[#FF5D01] text-white dark:bg-[#F05033] dark:text-white',
-  'Node.js': 'bg-[#5FA04E] text-white dark:bg-[#5FA04E] dark:text-white',
-  'Astro': 'bg-[#FF5D01] text-white dark:bg-[#FF5D01] dark:text-white',
-  'Tailwind CSS': 'bg-[#38B2AC] text-white dark:bg-[#38B2AC] dark:text-white',
-};
-
-const getTagClass = (tag: string): string => {
-    if (tag in tagColors) {
-        return tagColors[tag as keyof typeof tagColors];
-    }
-    return 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300';
-};
+interface Props { date: string; title: string; company: string; description: string; href: string; tags?: string[]; index: number; }
+const { date, title, company, description, href, tags, index } = Astro.props;
 ---
 
-<li class="stagger-item glass-panel glow-border relative mb-6 ms-2 md:ms-4 p-3 md:p-4 rounded-md"> 
-    <div class="absolute size-2 bg-cyan-200 rounded-full mt-6 md:mt-8 -start-3.5 md:-start-4.5 border border-slate-900"></div> 
-    <div class="mb-2"> 
-        <time class="mb-1 text-[10px] md:text-xs font-normal leading-none text-white/70 terminal-kicker"> 
-            {date} 
-        </time> 
-        <h3 class="text-sm md:text-base font-semibold text-white break-words">  
-            <span>{title}</span>
-            <span class="block sm:inline text-[10px] md:text-xs font-light text-slate-200/60 sm:ml-2 mt-1 sm:mt-0"> 
-                {href
-                    ? <a href={href} target="_blank" class="hover:underline ">{company}</a>
-                    : <span>{company}</span>
-                }
-            </span> 
-        </h3> 
-    </div> 
-    <p class="mb-2 text-xs md:text-sm font-normal text-slate-200/70"> 
-        {description} 
-    </p> 
-    {tags && (
-        <div class="flex flex-wrap gap-1 mt-1">
-            {tags.map((tag) => (
-                <span class={`text-[9px] md:text-[10px] font-medium px-1.5 md:px-2 py-0.5 rounded-sm ${getTagClass(tag)}`}>
-                    {tag}
-                </span>
-            ))}
-        </div>
-    )}
+<li class="experience-item stagger-item">
+  <span class="experience-node" aria-hidden="true"></span>
+  <article class="experience-card glass-panel glow-border">
+    <header class="experience-header">
+      <time class="experience-date">{date}</time>
+      <span class="experience-role-marker" aria-hidden="true">{String(index).padStart(2, '0')}</span>
+    </header>
+    <div class="experience-heading">
+      <h3>{title}</h3>
+      {href ? <a href={href} target="_blank" rel="noopener noreferrer" class="experience-company">{company}<span aria-hidden="true">↗</span></a> : <p class="experience-company">{company}</p>}
+    </div>
+    <details class="experience-details">
+      <summary><span class="experience-summary">{description}</span><span class="experience-more">Ver detalle <span aria-hidden="true">+</span></span></summary>
+      <p>{description}</p>
+    </details>
+    {tags && <div class="experience-tags">{tags.map((tag) => <span>{tag}</span>)}</div>}
+  </article>
 </li>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
-
-  document.querySelectorAll('.stagger-item').forEach(el => observer.observe(el));
-});
-</script>
+<style>
+  .experience-item { position:relative; margin:0 0 1rem .7rem; padding-left:1rem; }
+  .experience-node { position:absolute; top:1.15rem; left:-.28rem; width:.58rem; height:.58rem; border:2px solid #07101f; border-radius:999px; background:#7cf9ff; box-shadow:0 0 0 3px rgba(124,249,255,.12),0 0 10px rgba(124,249,255,.55); }
+  .experience-card { padding:.85rem .95rem .9rem; border-color:rgba(124,249,255,.17); }
+  .experience-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.48rem; }
+  .experience-date { color:rgba(184,211,255,.66); font:500 .61rem 'Fira Code',monospace; letter-spacing:.07em; text-transform:uppercase; }
+  .experience-role-marker { color:rgba(124,249,255,.42); font:600 .6rem 'Fira Code',monospace; letter-spacing:.08em; }
+  .experience-heading { display:flex; flex-wrap:wrap; align-items:baseline; gap:.25rem .6rem; }
+  .experience-heading h3 { color:#f5f9ff; font-size:.94rem; font-weight:700; line-height:1.28; letter-spacing:-.015em; }
+  .experience-company { margin:0; color:rgba(214,226,255,.54); font-size:.72rem; line-height:1.4; }
+  a.experience-company { transition:color 200ms ease; } a.experience-company:hover { color:#7cf9ff; } .experience-company span { margin-left:.22rem; }
+  .experience-details { margin-top:.54rem; } .experience-details summary { list-style:none; cursor:pointer; } .experience-details summary::-webkit-details-marker { display:none; }
+  .experience-summary { display:-webkit-box; overflow:hidden; color:rgba(214,226,255,.68); font-size:.76rem; line-height:1.52; -webkit-box-orient:vertical; -webkit-line-clamp:2; }
+  .experience-more { display:inline-flex; align-items:center; gap:.3rem; margin-top:.42rem; color:#7cf9ff; font:600 .61rem 'Fira Code',monospace; }
+  .experience-more span { transition:transform 180ms ease; } .experience-details[open] .experience-more span { transform:rotate(45deg); } .experience-details[open] .experience-summary { display:none; }
+  .experience-details > p { margin-top:.2rem; color:rgba(214,226,255,.76); font-size:.76rem; line-height:1.58; }
+  .experience-tags { display:flex; flex-wrap:wrap; gap:.35rem; margin-top:.65rem; } .experience-tags span { padding:.2rem .42rem; border:1px solid rgba(255,255,255,.1); border-radius:.3rem; color:rgba(214,226,255,.72); font:500 .55rem 'Fira Code',monospace; }
+  @media (min-width:768px) { .experience-item { margin-left:.85rem; padding-left:1.2rem; } .experience-card { padding:.9rem 1.05rem .95rem; } .experience-heading h3 { font-size:1rem; } .experience-summary,.experience-details > p { font-size:.8rem; } }
+</style>

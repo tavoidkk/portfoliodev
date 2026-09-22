@@ -21,6 +21,24 @@ import BackgroundFx from '../components/BackgroundFx.astro';
 		<Header />
 		<slot />
 		<Footer />
+		<script>
+			const initCardGlow = () => {
+				if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+				document.querySelectorAll<HTMLElement>('.glow-border, .project-card').forEach((card) => {
+					card.addEventListener('pointermove', (event) => {
+						const rect = card.getBoundingClientRect();
+						card.style.setProperty('--hover-x', `${event.clientX - rect.left}px`);
+						card.style.setProperty('--hover-y', `${event.clientY - rect.top}px`);
+					});
+				});
+			};
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initCardGlow, { once: true });
+			} else {
+				initCardGlow();
+			}
+		</script>
 	</body>
 </html>
 

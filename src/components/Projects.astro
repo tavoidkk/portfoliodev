@@ -3,285 +3,152 @@ import * as Icons from './icons/index.js';
 import { projects } from './projects.js';
 
 const TAG_ICONS: Record<string, any> = {
-    'NextJS': Icons.NextJSIcon,
-    'Astro': Icons.AstroIcon,
-    'GitHub': Icons.GitHubIcon,
-    'Python': Icons.PythonIcon,
-    'JavaScript': Icons.JavaScriptIcon,
-    'React': Icons.ReactIcon,
-    'NodeJS': Icons.NodeJSIcon,
-    'ExpressJS': Icons.ExpressJSIcon,
-    'MySQL': Icons.MySQLIcon,
-    'TypeScript': Icons.TypeScriptIcon,
-    'PostgreSQL': Icons.PostgreSQLIcon,
-    'Supabase': Icons.SupabaseIcon,
+  NextJS: Icons.NextJSIcon, Astro: Icons.AstroIcon, GitHub: Icons.GitHubIcon,
+  Python: Icons.PythonIcon, JavaScript: Icons.JavaScriptIcon, React: Icons.ReactIcon,
+  NodeJS: Icons.NodeJSIcon, ExpressJS: Icons.ExpressJSIcon, MySQL: Icons.MySQLIcon,
+  TypeScript: Icons.TypeScriptIcon, PostgreSQL: Icons.PostgreSQLIcon, Supabase: Icons.SupabaseIcon,
 };
+const featured = projects.find((project) => project.featured) ?? projects[0];
+const secondary = projects.filter((project) => project !== featured);
 ---
-<section class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 lg:gap-8">
-    {projects.map((project, index) => {
-        const primaryLink = project.preview || project.href;
-        return (
-        <article
-            class="glass-panel glow-border stagger-item relative w-full rounded-xl overflow-hidden"
-            style={`transition-delay: ${index * 80}ms;`}
-            data-project={JSON.stringify(project)}
-        >
-            <figure class="relative aspect-video overflow-hidden">
-                    <img class="w-full h-full object-cover" src={project.image} alt={project.title} />
-            </figure>
-            <section class="p-4 md:p-5 flex flex-col justify-between min-h-[190px]">
-                <header>
-                    {primaryLink ? (
-                    <a href={primaryLink} target="_blank" rel="noopener noreferrer">
-                        <h3 class="mb-1 text-base md:text-lg font-semibold tracking-tight text-white">{project.title}</h3>
-                    </a>
-                    ) : (
-                        <h3 class="mb-1 text-base md:text-lg font-semibold tracking-tight text-white">{project.title}</h3>
-                    )}
-                </header>
-                <div class="mb-4">
-                    <p class="project-description text-xs md:text-sm font-normal text-slate-200/70" data-project-description>
-                        {project.description}
-                    </p>
-                    <button
-                        type="button"
-                        class="view-more-btn mt-2 hidden rounded-md border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-cyan-200/90 transition hover:text-cyan-100"
-                        data-view-more
-                    >
-                        Ver mas
-                    </button>
-                </div>
-                <footer class="flex flex-row items-center justify-between gap-4">
-                    <div class="flex items-center gap-2">
-                        {project.tags.map((tag) => {
-                            const Icon = TAG_ICONS[tag] || null;
-                            return Icon ? (
-                                <span class="rounded-md border border-white/10 bg-white/5 p-1 text-cyan-100">
-                                    <Icon class="w-4 h-4" />
-                                </span>
-                            ) : null;
-                        })}
-                    </div>
-                    <div class="flex items-center gap-3">
-                        {project.preview && (
-                        <a href={project.preview} target="_blank" rel="noopener noreferrer" class="text-slate-300/70 hover:text-cyan-200 transition-colors duration-300" aria-label="Ver proyecto">
-                            <Icons.EyeIcon />
-                        </a>)}
-                        {project.href && (
-                        <a href={project.href} target="_blank" rel="noopener noreferrer" class="text-slate-300/70 hover:text-cyan-200 transition-colors duration-300" aria-label="Ver repositorio en GitHub">
-                            <Icons.GitHubIcon class="w-5 h-5" />
-                        </a>)}
-                    </div>
-                </footer>
-            </section>
-        </article>
-    )})}
-</section>
 
-<div id="project-modal" class="project-modal fixed inset-0 z-50 hidden items-center justify-center" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
-    <div class="project-modal-backdrop absolute inset-0 bg-slate-950/70 backdrop-blur-sm" data-modal-backdrop></div>
-    <div class="project-modal-panel relative z-10 w-[min(92vw,600px)] max-h-[85vh] overflow-auto rounded-xl border border-white/10 bg-slate-900/95 p-5 md:p-6 shadow-xl">
-        <div class="mb-4 flex items-start justify-between gap-4">
-            <h3 id="project-modal-title" class="text-lg md:text-xl font-semibold tracking-tight text-cyan-200"></h3>
-            <button
-                type="button"
-                class="rounded-md border border-white/10 bg-white/10 px-2 py-1 text-xs font-semibold text-slate-200/80 transition hover:text-white"
-                data-modal-close
-                aria-label="Cerrar"
-            >
-                Cerrar
-            </button>
-        </div>
-        <div class="mb-4">
-            <img id="project-modal-image" class="h-40 w-full rounded-lg object-cover" src="" alt="" />
-        </div>
-        <div id="project-modal-tags" class="mb-4 flex flex-wrap gap-2"></div>
-        <p id="project-modal-description" class="text-sm md:text-base text-slate-200/80"></p>
-        <div class="mt-5 flex flex-wrap items-center gap-3">
-            <a
-                id="project-modal-preview"
-                class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-semibold text-cyan-200 transition hover:text-cyan-100"
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Ver proyecto"
-            >
-                <Icons.EyeIcon />
-                Vista previa
-            </a>
-            <a
-                id="project-modal-github"
-                class="hidden items-center gap-2 rounded-md border border-white/10 bg-white/5 px-3.5 py-2 text-sm font-semibold text-slate-200/80 transition hover:text-white"
-                href=""
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Ver repositorio en GitHub"
-            >
-                <Icons.GitHubIcon class="h-5 w-5" />
-                GitHub
-            </a>
-        </div>
+<div class="projects-showcase">
+  <article class="project-card project-featured stagger-item" style={`--project-accent: ${featured.accent}; transition-delay: 60ms;`} data-project-card data-project={JSON.stringify(featured)}>
+    <div class="project-visual project-featured-visual">
+      <img src={featured.image} alt={`Vista previa de ${featured.title}`} loading="eager" />
+      <div class="project-image-shade"></div><span class="project-index">01</span>
+      <span class="project-featured-label"><span class="project-live-dot"></span>Proyecto destacado</span>
     </div>
-</div>
+    <div class="project-content project-featured-content">
+      <div><p class="project-status">&gt; {featured.status}</p><h3>{featured.title}</h3><p class="project-copy project-copy-featured">{featured.description}</p><button class="project-more" type="button" data-project-more>Ver más</button></div>
+      <div class="project-tags" aria-label="Tecnologías utilizadas">
+        {featured.tags.map((tag) => { const Icon = TAG_ICONS[tag]; return <span class="project-tag">{Icon && <Icon class="size-4" />}{tag}</span>; })}
+      </div>
+      <div class="project-actions">
+        {featured.preview && <a class="project-action project-action-primary" href={featured.preview} target="_blank" rel="noopener noreferrer"><Icons.EyeIcon />Ver proyecto</a>}
+        {featured.href && <a class="project-action project-action-secondary" href={featured.href} target="_blank" rel="noopener noreferrer"><Icons.GitHubIcon class="size-5" />GitHub</a>}
+      </div>
+    </div>
+  </article>
 
-<div id="project-modal-icon-pool" class="hidden">
-    {Object.entries(TAG_ICONS).map(([tag, Icon]) => (
-        <span data-tag-icon={tag} class="rounded-md border border-white/10 bg-white/5 p-1 text-cyan-100">
-            <Icon class="h-4 w-4" />
-        </span>
+  <div class="project-section-label"><span>&gt; otros_proyectos.list()</span><span>{String(secondary.length).padStart(2, '0')} resultados</span></div>
+  <div class="projects-grid">
+    {secondary.map((project, index) => (
+      <article class="project-card project-compact stagger-item" style={`--project-accent: ${project.accent}; transition-delay: ${140 + index * 80}ms;`} data-project-card data-project={JSON.stringify(project)}>
+        <a class="project-visual project-compact-visual" href={project.preview || project.href} target="_blank" rel="noopener noreferrer" aria-label={`Abrir ${project.title}`}>
+          <img src={project.image} alt={`Vista previa de ${project.title}`} loading="lazy" />
+          <div class="project-image-shade"></div><span class="project-index">{String(index + 2).padStart(2, '0')}</span><span class="project-open-icon" aria-hidden="true">↗</span>
+        </a>
+        <div class="project-content">
+          <div><p class="project-status">&gt; {project.status}</p><h3>{project.title}</h3><p class="project-copy project-copy-compact">{project.description}</p><button class="project-more" type="button" data-project-more>Ver más</button></div>
+          <div class="project-card-footer">
+            <div class="project-tags" aria-label="Tecnologías utilizadas">
+              {project.tags.map((tag) => { const Icon = TAG_ICONS[tag]; return <span class="project-tag project-tag-compact">{Icon && <Icon class="size-3.5" />}{tag}</span>; })}
+            </div>
+            <div class="project-icon-actions">
+              {project.preview && <a href={project.preview} target="_blank" rel="noopener noreferrer" aria-label={`Ver ${project.title}`}><Icons.EyeIcon /></a>}
+              {project.href && <a href={project.href} target="_blank" rel="noopener noreferrer" aria-label={`Código de ${project.title}`}><Icons.GitHubIcon class="size-5" /></a>}
+            </div>
+          </div>
+        </div>
+      </article>
     ))}
+  </div>
 </div>
 
-<style>
-    .project-description {
-        display: -webkit-box;
-        -webkit-line-clamp: 5;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-    .project-modal {
-        display: flex;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 320ms ease;
-    }
-    .project-modal-backdrop {
-        opacity: 0;
-        transition: opacity 320ms ease;
-    }
-    .project-modal-panel {
-        transform: translateY(12px) scale(0.96);
-        opacity: 0;
-        transition: transform 340ms ease, opacity 340ms ease;
-    }
-    .project-modal.is-visible {
-        opacity: 1;
-        pointer-events: auto;
-    }
-    .project-modal.is-visible .project-modal-backdrop {
-        opacity: 1;
-    }
-    .project-modal.is-visible .project-modal-panel {
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-</style>
+<dialog class="project-dialog" data-project-dialog aria-labelledby="project-dialog-title">
+  <div class="project-dialog-head">
+    <div><p class="project-dialog-kicker">&gt; project.details()</p><h3 id="project-dialog-title"></h3></div>
+    <button type="button" class="project-dialog-close" data-dialog-close aria-label="Cerrar detalles">×</button>
+  </div>
+  <p class="project-dialog-copy" data-dialog-description></p>
+  <div class="project-dialog-actions">
+    <a class="project-action project-action-primary" data-dialog-preview target="_blank" rel="noopener noreferrer"><Icons.EyeIcon />Ver proyecto</a>
+    <a class="project-action project-action-secondary" data-dialog-github target="_blank" rel="noopener noreferrer"><Icons.GitHubIcon class="size-5" />GitHub</a>
+  </div>
+</dialog>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-        observer.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.2 });
+  const initProjectCards = () => {
+    const dialog = document.querySelector<HTMLDialogElement>('[data-project-dialog]');
+    const title = dialog?.querySelector<HTMLElement>('#project-dialog-title');
+    const description = dialog?.querySelector<HTMLElement>('[data-dialog-description]');
+    const preview = dialog?.querySelector<HTMLAnchorElement>('[data-dialog-preview]');
+    const github = dialog?.querySelector<HTMLAnchorElement>('[data-dialog-github]');
 
-  document.querySelectorAll('.stagger-item').forEach(el => observer.observe(el));
-
-  const modal = document.getElementById('project-modal');
-  const modalTitle = document.getElementById('project-modal-title');
-  const modalDescription = document.getElementById('project-modal-description');
-  const modalImage = document.getElementById('project-modal-image');
-  const modalTags = document.getElementById('project-modal-tags');
-  const iconPool = document.getElementById('project-modal-icon-pool');
-  const modalPreview = document.getElementById('project-modal-preview');
-  const modalGithub = document.getElementById('project-modal-github');
-  const closeButtons = modal ? modal.querySelectorAll('[data-modal-close], [data-modal-backdrop]') : [];
-
-  const openModal = (project) => {
-    if (!modal) return;
-    modalTitle.textContent = project.title || '';
-    modalDescription.textContent = project.description || '';
-    if (project.image) {
-      modalImage.src = project.image;
-      modalImage.alt = project.title || 'Proyecto';
-      modalImage.classList.remove('hidden');
-    } else {
-      modalImage.classList.add('hidden');
-    }
-
-    if (modalPreview) {
-      if (project.preview) {
-        modalPreview.href = project.preview;
-        modalPreview.classList.remove('hidden');
-      } else {
-        modalPreview.classList.add('hidden');
-      }
-    }
-
-    if (modalGithub) {
-      if (project.href) {
-        modalGithub.href = project.href;
-        modalGithub.classList.remove('hidden');
-      } else {
-        modalGithub.classList.add('hidden');
-      }
-    }
-
-    modalTags.innerHTML = '';
-    if (Array.isArray(project.tags) && iconPool) {
-      project.tags.forEach((tag) => {
-        const iconEl = iconPool.querySelector(`[data-tag-icon="${tag}"]`);
-        if (!iconEl) return;
-        modalTags.appendChild(iconEl.cloneNode(true));
-      });
-    }
-
-    modal.classList.add('is-visible');
-    document.body.style.overflow = 'hidden';
-  };
-
-  const closeModal = () => {
-    if (!modal) return;
-    modal.classList.remove('is-visible');
-    document.body.style.overflow = '';
-  };
-
-  closeButtons.forEach((btn) => btn.addEventListener('click', closeModal));
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') closeModal();
-  });
-
-  const updateViewMoreButtons = () => {
-    document.querySelectorAll('[data-project-description]').forEach((desc) => {
-      const button = desc.closest('article')?.querySelector('[data-view-more]');
-      if (!button) return;
-      if (desc.scrollHeight > desc.clientHeight + 1) {
-        button.classList.remove('hidden');
-      } else {
-        button.classList.add('hidden');
-      }
-    });
-  };
-
-  document.querySelectorAll('[data-view-more]').forEach((btn) => {
-    btn.addEventListener('click', (event) => {
-      const article = event.currentTarget.closest('article');
-      if (!article) return;
-      const payload = article.getAttribute('data-project');
-      if (!payload) return;
-      try {
+    document.querySelectorAll<HTMLButtonElement>('[data-project-more]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const payload = button.closest<HTMLElement>('[data-project]')?.dataset.project;
+        if (!payload || !dialog || !title || !description || !preview || !github) return;
         const project = JSON.parse(payload);
-        openModal(project);
-      } catch (error) {
-        console.error('No se pudo abrir el modal', error);
-      }
+        title.textContent = project.title;
+        description.textContent = project.description;
+        preview.hidden = !project.preview; preview.href = project.preview || '';
+        github.hidden = !project.href; github.href = project.href || '';
+        dialog.style.setProperty('--project-accent', project.accent);
+        dialog.showModal();
+      });
     });
-  });
 
-  const debounce = (fn, delay = 120) => {
-    let timeout;
-    return (...args) => {
-      window.clearTimeout(timeout);
-      timeout = window.setTimeout(() => fn(...args), delay);
-    };
+    dialog?.querySelector('[data-dialog-close]')?.addEventListener('click', () => dialog.close());
+    dialog?.addEventListener('click', (event) => { if (event.target === dialog) dialog.close(); });
   };
-
-  const onResize = debounce(updateViewMoreButtons, 150);
-  window.addEventListener('resize', onResize);
-  window.addEventListener('load', updateViewMoreButtons);
-  requestAnimationFrame(updateViewMoreButtons);
-});
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initProjectCards, { once: true });
+  else initProjectCards();
 </script>
+
+<style>
+  .projects-showcase { display:flex; flex-direction:column; gap:1rem; }
+  .project-card { position:relative; overflow:hidden; border:1px solid color-mix(in oklab,var(--project-accent) 25%,rgba(255,255,255,.08)); border-radius:1rem; background:linear-gradient(145deg,rgba(12,18,38,.94),rgba(5,9,22,.88)); box-shadow:0 18px 45px rgba(0,0,0,.28); isolation:isolate; transition:transform 420ms cubic-bezier(.2,.8,.2,1),border-color 420ms ease,box-shadow 420ms ease; }
+  .project-card:hover { transform:translateY(-5px); border-color:color-mix(in oklab,var(--project-accent) 60%,transparent); box-shadow:0 24px 60px rgba(0,0,0,.4),0 0 28px color-mix(in oklab,var(--project-accent) 13%,transparent); }
+  .project-featured { display:grid; grid-template-columns:1fr; }
+  .project-visual { position:relative; display:block; overflow:hidden; background:rgba(255,255,255,.03); }
+  .project-visual img { width:100%; height:100%; object-fit:cover; object-position:center; transition:transform 700ms cubic-bezier(.2,.8,.2,1),filter 500ms ease; }
+  .project-card:hover .project-visual img { transform:scale(1.045); filter:saturate(1.08); }
+  .project-featured-visual { height:220px; }
+  .project-image-shade { position:absolute; inset:0; background:linear-gradient(180deg,rgba(4,8,20,.08),rgba(4,8,20,.65)); }
+  .project-index { position:absolute; top:.9rem; right:1rem; font-family:'Fira Code',monospace; font-size:.65rem; color:rgba(255,255,255,.72); letter-spacing:.16em; }
+  .project-featured-label { position:absolute; left:1rem; bottom:1rem; display:inline-flex; align-items:center; gap:.5rem; padding:.45rem .7rem; border:1px solid color-mix(in oklab,var(--project-accent) 45%,transparent); border-radius:999px; background:rgba(5,9,22,.78); backdrop-filter:blur(10px); color:#fff7bf; font:600 .64rem 'Fira Code',monospace; letter-spacing:.08em; text-transform:uppercase; }
+  .project-live-dot { width:.42rem; height:.42rem; border-radius:50%; background:var(--project-accent); box-shadow:0 0 10px var(--project-accent); animation:project-pulse 1.8s ease-in-out infinite; }
+  .project-content { display:flex; flex-direction:column; justify-content:space-between; gap:.8rem; padding:1rem; }
+  .project-featured-content { padding:1.1rem; }
+  .project-status { margin-bottom:.4rem; color:var(--project-accent); font:600 .62rem 'Fira Code',monospace; letter-spacing:.08em; text-transform:uppercase; }
+  .project-content h3 { color:white; font-size:1.2rem; font-weight:750; letter-spacing:-.02em; }
+  .project-featured-content h3 { font-size:clamp(1.55rem,4vw,2rem); }
+  .project-copy { margin-top:.45rem; color:rgba(214,226,255,.68); font-size:.75rem; line-height:1.55; display:-webkit-box; -webkit-box-orient:vertical; overflow:hidden; }
+  .project-copy-featured { -webkit-line-clamp:4; }
+  .project-copy-compact { -webkit-line-clamp:3; }
+  .project-more { margin-top:.45rem; color:var(--project-accent); font:600 .66rem 'Fira Code',monospace; transition:color 200ms ease,transform 200ms ease; }
+  .project-more:hover { color:white; transform:translateX(2px); }
+  .project-tags { display:flex; flex-wrap:wrap; gap:.45rem; }
+  .project-tag { display:inline-flex; align-items:center; gap:.4rem; padding:.42rem .65rem; border:1px solid rgba(255,255,255,.09); border-radius:.55rem; background:rgba(255,255,255,.035); color:rgba(230,241,255,.82); font:500 .65rem 'Fira Code',monospace; }
+  .project-tag :global(svg) { color:var(--project-accent); }
+  .project-tag-compact { padding:.34rem .48rem; font-size:.58rem; }
+  .project-actions { display:flex; flex-wrap:wrap; gap:.65rem; }
+  .project-action { display:inline-flex; align-items:center; justify-content:center; gap:.5rem; padding:.68rem .9rem; border-radius:.65rem; font-size:.75rem; font-weight:700; transition:transform 250ms ease,background 250ms ease; }
+  .project-action:hover { transform:translateY(-2px); }
+  .project-action-primary { background:var(--project-accent); color:#090b12; }
+  .project-action-secondary { border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.04); color:#e6f1ff; }
+  .project-section-label { display:flex; justify-content:space-between; gap:1rem; margin:.8rem 0 0; color:rgba(214,226,255,.44); font:500 .62rem 'Fira Code',monospace; letter-spacing:.07em; text-transform:uppercase; }
+  .projects-grid { display:grid; grid-template-columns:1fr; gap:1rem; }
+  .project-compact { display:flex; flex-direction:column; min-height:100%; }
+  .project-compact-visual { height:145px; }
+  .project-open-icon { position:absolute; right:.9rem; bottom:.8rem; display:grid; place-items:center; width:2rem; height:2rem; border:1px solid rgba(255,255,255,.15); border-radius:50%; background:rgba(5,9,22,.7); color:white; backdrop-filter:blur(8px); transition:transform 300ms ease,background 300ms ease; }
+  .project-card:hover .project-open-icon { transform:rotate(45deg); background:var(--project-accent); color:#080b12; }
+  .project-card-footer { display:flex; align-items:flex-end; justify-content:space-between; gap:.7rem; }
+  .project-icon-actions { display:flex; align-items:center; gap:.65rem; flex-shrink:0; }
+  .project-icon-actions a { color:rgba(214,226,255,.58); transition:color 250ms ease,transform 250ms ease; }
+  .project-icon-actions a:hover { color:var(--project-accent); transform:translateY(-2px); }
+  .project-dialog { width:min(90vw,520px); max-height:min(80vh,620px); margin:auto; padding:1.35rem; border:1px solid color-mix(in oklab,var(--project-accent) 45%,rgba(255,255,255,.1)); border-radius:1rem; background:rgba(7,11,27,.97); color:#e6f1ff; box-shadow:0 30px 90px rgba(0,0,0,.65),0 0 30px color-mix(in oklab,var(--project-accent) 12%,transparent); }
+  .project-dialog::backdrop { background:rgba(3,5,16,.78); backdrop-filter:blur(6px); }
+  .project-dialog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:1rem; }
+  .project-dialog-kicker { color:var(--project-accent); font:600 .62rem 'Fira Code',monospace; text-transform:uppercase; }
+  .project-dialog h3 { margin-top:.25rem; color:white; font-size:1.35rem; font-weight:750; }
+  .project-dialog-close { display:grid; place-items:center; width:2rem; height:2rem; border:1px solid rgba(255,255,255,.1); border-radius:.55rem; background:rgba(255,255,255,.04); color:rgba(255,255,255,.7); font-size:1.25rem; }
+  .project-dialog-copy { margin-top:1rem; color:rgba(214,226,255,.72); font-size:.85rem; line-height:1.7; }
+  .project-dialog-actions { display:flex; flex-wrap:wrap; gap:.65rem; margin-top:1.2rem; }
+  .project-dialog [hidden] { display:none; }
+  @keyframes project-pulse { 50% { opacity:.55; transform:scale(1.35); } }
+  @media (min-width:640px) { .projects-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .project-featured { grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr); height:355px; } .project-featured-visual { height:100%; } .project-featured-visual img { object-position:center center; } }
+  @media (prefers-reduced-motion:reduce) { .project-card,.project-visual img,.project-open-icon,.project-action { transition:none; } .project-card:hover { transform:none; } .project-card:hover .project-visual img { transform:none; } .project-live-dot { animation:none; } }
+</style>
