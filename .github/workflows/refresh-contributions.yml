@@ -28,7 +28,7 @@ jobs:
       - name: Commit and push changes
         run: |
           git config user.name 'tavoidkk'
-          git config user.email 'gustavo.vidal@urbe.edu.ve'
+          git config user.email 'gustavo.vidal03@urbe.edu.ve'
                  
           echo "Último refresco: $(date)" > src/data/timestamp.txt
           
