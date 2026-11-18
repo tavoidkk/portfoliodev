@@ -11,6 +11,14 @@ export const projects = [
     featured: true,
     status: "PWA disponible",
     accent: "#facc15",
+    slug: "listamarilla",
+    year: "2026",
+    role: "Producto & full-stack",
+    highlights: [
+      "Multi-tenant con branding y portales por edificio",
+      "PWA instalable con códigos QR por prestador",
+      "Autenticación, panel administrativo y Supabase",
+    ],
   },
   {
     title: "Agente Fantasy",
@@ -21,6 +29,14 @@ export const projects = [
     image: `${BASE}agente-fantasy.svg`,
     status: "En desarrollo",
     accent: "#f4e51c",
+    slug: "agente-fantasy",
+    year: "2026",
+    role: "IA & producto local",
+    highlights: [
+      "Panel local con OAuth de LALIGA y modo solo lectura",
+      "SQLite para historial y consultas rápidas",
+      "Recomendaciones explicables con OpenRouter opcional",
+    ],
   },
   {
     title: "CRM con modulos ERP (en ejecucion)",
@@ -31,6 +47,14 @@ export const projects = [
     image: `${BASE}crm.webp`,
     status: "Código disponible",
     accent: "#a78bfa",
+    slug: "casavidal-crm",
+    year: "2026",
+    role: "Líder de proyecto & full-stack",
+    highlights: [
+      "CRM + ERP para ferretería con facturación y reportes",
+      "React 19, TypeScript, Zustand y validación con Zod",
+      "Tests con Vitest y Playwright, backend Node + PostgreSQL",
+    ],
   },
   {
     title: "Contavo.io",
@@ -41,6 +65,14 @@ export const projects = [
     image: `${BASE}Contavo.png`,
     status: "Producto web",
     accent: "#f58742",
+    slug: "contavo",
+    year: "2026",
+    role: "Producto fintech",
+    highlights: [
+      "Banca en vivo y sincronización con QuickBooks",
+      "Contabilidad, inventario y reportes en un dashboard",
+      "Automatización de procesos y seguridad de datos financieros",
+    ],
   },
   {
     title: "LLM Radar",
@@ -51,5 +83,13 @@ export const projects = [
     image: `${BASE}llm-radar.png`,
     status: "Demo disponible",
     accent: "#60a5fa",
+    slug: "llm-radar",
+    year: "2026",
+    role: "Data & full-stack",
+    highlights: [
+      "Métricas en vivo de Elo, tokens por segundo y costo",
+      "WebSocket y Supabase con validación de esquemas Zod",
+      "Observabilidad con Prometheus, Docker Compose y Caddy",
+    ],
   },
 ];
