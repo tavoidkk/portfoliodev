@@ -12,7 +12,17 @@ export const projects = [
     status: "PWA disponible",
     accent: "#facc15",
   },
-    {
+  {
+    title: "Agente Fantasy",
+    description: "Asesor local para LALIGA Fantasy que reúne plantilla, mercado, rivales y referencias de FutbolFantasy en un panel explicable. Combina reglas propias y persistencia en SQLite con recomendaciones opcionales vía OpenRouter, manteniendo el modo solo lectura y el token OAuth fuera de las consultas a la IA.",
+    href: "https://github.com/tavoidkk/agente-fantasy",
+    preview: "",
+    tags: ["Python", "SQLite", "OpenRouter"],
+    image: `${BASE}agente-fantasy.svg`,
+    status: "En desarrollo",
+    accent: "#f4e51c",
+  },
+  {
     title: "CRM con modulos ERP (en ejecucion)",
     description: "Este sistema CRM con módulos ERP está diseñado para gestionar las relaciones con los clientes y optimizar los procesos empresariales.",
     href: "https://github.com/tavoidkk/casavidal-frontend",
