@@ -98,6 +98,8 @@ const LABEL_H = 12;
 const LEGEND_H = 14;
 const svgHeight = LABEL_H + gridHeight + LEGEND_H;
 
+const cellDelay = (col: number, row: number) => col * 9 + row * 20;
+
 const formatTooltip = (iso: string, count: number) => {
   const date = new Date(`${iso}T00:00:00Z`).toLocaleDateString('es', {
     day: 'numeric',
@@ -116,117 +118,313 @@ const formatUpdated = (iso: string) => {
 };
 ---
 
-{
-  loaded ? (
-    <>
-      <div class="github-heatmap-total">
-        {total ? `${total} contribuciones en el último año` : 'Actividad de GitHub'}
-      </div>
-      <svg
-        class="github-heatmap"
-        viewBox={`0 0 ${width} ${svgHeight}`}
-        role="img"
-        aria-label="Gráfico de contribuciones de GitHub del último año"
-      >
-        <g class="gh-month">
-          {labels.map(l => (
-            <text key={l.x} x={l.x} y={9}>{l.label}</text>
-          ))}
-        </g>
-        <g transform={`translate(0, ${LABEL_H})`}>
-          {days.map(day => (
-            <rect
-              key={day.iso}
-              x={day.col * PITCH}
-              y={day.row * PITCH}
-              width={CELL}
-              height={CELL}
-              rx={2}
-              fill={COLORS[day.level]}
+<div class="heatmap-terminal terminal-shell stagger-item" style="transition-delay:120ms;" data-heatmap>
+  <div class="terminal-bar">
+    <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="heatmap-title">tavoidkk@github:~$ git log --graph --all</span>
+    <span class="heatmap-live">● LIVE</span>
+  </div>
+
+  <div class="heatmap-body">
+    <div class="terminal-prompt heatmap-prompt" aria-hidden="true">
+      <span class="terminal-prompt-path">tavoidkk@github</span><span class="terminal-prompt-sep">:~$</span>
+      <span class="terminal-prompt-cmd" data-heatmap-cmd data-text="contrib --graph">contrib --graph</span>
+      <span class="terminal-cursor"></span>
+    </div>
+
+    {
+      loaded ? (
+        <>
+          <p class="heatmap-total">{total ? `${total} contribuciones en el último año` : 'Actividad de GitHub'}</p>
+          <div class="heatmap-wrap" data-heatmap-wrap>
+            <svg
+              class="github-heatmap"
+              viewBox={`0 0 ${width} ${svgHeight}`}
+              role="img"
+              aria-label="Gráfico de contribuciones de GitHub del último año"
             >
-              <title>{formatTooltip(day.iso, day.count)}</title>
-            </rect>
-          ))}
-        </g>
-      </svg>
-      {notice && <p class="github-heatmap-notice">{notice}</p>}
-      <div class="github-heatmap-legend">
-        <span>Menos</span>
-        {[1, 2, 3, 4].map(level => (
-          <i key={level} style={`background: ${COLORS[level]}`}></i>
-        ))}
-        <span>Más</span>
-      </div>
-      {generatedAt && formatUpdated(generatedAt) && (
-        <p class="github-heatmap-updated">{formatUpdated(generatedAt)}</p>
-      )}
-    </>
-  ) : (
-    <p class="github-heatmap-error">No se pudo cargar el gráfico de contribuciones.</p>
-  )
-}
+              <g class="gh-month">
+                {labels.map(l => (
+                  <text key={l.x} x={l.x} y={9}>{l.label}</text>
+                ))}
+              </g>
+              <g transform={`translate(0, ${LABEL_H})`}>
+                {days.map(day => (
+                  <rect
+                    key={day.iso}
+                    class="gh-cell"
+                    x={day.col * PITCH}
+                    y={day.row * PITCH}
+                    width={CELL}
+                    height={CELL}
+                    rx={2}
+                    fill={COLORS[day.level]}
+                    data-tip={formatTooltip(day.iso, day.count)}
+                    style={`--cell-delay:${cellDelay(day.col, day.row)}ms;`}
+                  />
+                ))}
+              </g>
+            </svg>
+            <div class="heatmap-tooltip" data-heatmap-tooltip role="status" aria-live="polite" aria-atomic="true">
+              <span data-heatmap-tooltip-text></span>
+            </div>
+          </div>
+          {notice && <p class="heatmap-notice">{notice}</p>}
+          <div class="heatmap-legend">
+            <span>Menos</span>
+            {[1, 2, 3, 4].map(level => (
+              <i key={level} style={`background:${COLORS[level]}`}></i>
+            ))}
+            <span>Más</span>
+          </div>
+          {generatedAt && formatUpdated(generatedAt) && (
+            <p class="heatmap-updated">{formatUpdated(generatedAt)}</p>
+          )}
+        </>
+      ) : (
+        <p class="heatmap-error">No se pudo cargar el gráfico de contribuciones.</p>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  const initHeatmap = () => {
+    const root = document.querySelector<HTMLElement>('[data-heatmap]');
+    if (!root) return;
+
+    const wrap = root.querySelector<HTMLElement>('[data-heatmap-wrap]');
+    const tooltip = root.querySelector<HTMLElement>('[data-heatmap-tooltip]');
+    const tooltipText = root.querySelector<HTMLElement>('[data-heatmap-tooltip-text]');
+    const command = root.querySelector<HTMLElement>('[data-heatmap-cmd]');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let booted = false;
+
+    const hideTip = () => tooltip?.classList.remove('is-visible');
+
+    const showTip = (cell: Element) => {
+      if (!wrap || !tooltip || !tooltipText) return;
+      const text = cell.getAttribute('data-tip');
+      if (!text) return;
+
+      tooltipText.textContent = text;
+      tooltip.classList.add('is-visible');
+
+      const cellRect = cell.getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+      const half = tooltip.offsetWidth / 2;
+      let left = cellRect.left - wrapRect.left + cellRect.width / 2;
+      left = Math.max(half + 2, Math.min(left, wrapRect.width - half - 2));
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${cellRect.top - wrapRect.top}px`;
+    };
+
+    root.querySelectorAll('.gh-cell').forEach((cell) => {
+      cell.addEventListener('pointerenter', () => showTip(cell));
+      cell.addEventListener('pointermove', () => showTip(cell));
+      cell.addEventListener('pointerleave', hideTip);
+    });
+
+    const build = () => {
+      if (reduceMotion) {
+        root.classList.add('is-ready');
+        return;
+      }
+      root.classList.add('is-building');
+      if (wrap) wrap.classList.add('is-building');
+    };
+
+    const boot = () => {
+      if (booted) return;
+      booted = true;
+      root.classList.add('is-booted');
+
+      if (reduceMotion || !command) {
+        build();
+        return;
+      }
+
+      const text = command.dataset.text ?? command.textContent ?? '';
+      command.textContent = '';
+      let index = 0;
+
+      const type = () => {
+        command.textContent = text.slice(0, index + 1);
+        index += 1;
+        if (index < text.length) window.setTimeout(type, 26);
+        else build();
+      };
+
+      window.setTimeout(type, 180);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        boot();
+        observer.disconnect();
+      }
+    }, { threshold: 0.25 });
+
+    observer.observe(root);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeatmap, { once: true });
+  } else {
+    initHeatmap();
+  }
+</script>
 
 <style>
+  .heatmap-terminal { font-family: 'Fira Code', ui-monospace, monospace; }
+  .heatmap-terminal.is-booted { animation: heatmap-boot 480ms steps(2, end) both; }
+
+  .heatmap-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .heatmap-live {
+    margin-left: auto;
+    color: var(--term-green);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .heatmap-body { padding: 0.85rem; }
+  .heatmap-prompt { margin-bottom: 0.7rem; }
+
+  .heatmap-total,
+  .heatmap-notice,
+  .heatmap-updated {
+    margin: 0 0 10px;
+    text-align: right;
+    font-size: 0.62rem;
+    color: rgba(214, 226, 255, 0.6);
+  }
+
+  .heatmap-notice,
+  .heatmap-updated { margin: 6px 0 0; font-size: 0.58rem; color: rgba(214, 226, 255, 0.42); }
+
+  .heatmap-wrap { position: relative; }
+
+  .heatmap-wrap::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--term-green), transparent);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .heatmap-wrap.is-building::after { animation: heatmap-scan 900ms ease-out both; }
+
   .github-heatmap {
     width: 100%;
     height: auto;
     display: block;
+    overflow: visible;
   }
 
-  .github-heatmap-total {
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 11px;
-    color: rgba(214, 226, 255, 0.6);
-    text-align: right;
-    margin-bottom: 10px;
+  .gh-cell {
+    cursor: crosshair;
+    transition: stroke 120ms ease, filter 120ms ease;
   }
 
-  .github-heatmap-notice {
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
-    color: rgba(214, 226, 255, 0.45);
-    text-align: right;
-    margin: 6px 0 0;
+  .gh-cell:hover {
+    stroke: #eafff4;
+    stroke-width: 1.4;
+    filter: brightness(1.35);
   }
 
-  .github-heatmap-updated {
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
-    color: rgba(214, 226, 255, 0.4);
-    text-align: right;
-    margin: 4px 0 0;
+  .heatmap-wrap.is-building .gh-cell {
+    animation: heatmap-drop 380ms cubic-bezier(0.2, 1.35, 0.35, 1) both;
+    animation-delay: var(--cell-delay, 0ms);
   }
 
-  .github-heatmap-legend {
+  .heatmap-tooltip {
+    position: absolute;
+    z-index: 5;
+    transform: translate(-50%, -100%);
+    margin-top: -6px;
+    padding: 0.32rem 0.5rem;
+    border: 1px solid rgba(124, 249, 255, 0.28);
+    border-radius: 0.35rem;
+    background: rgba(4, 9, 20, 0.96);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+    color: #eaf6ff;
+    font-size: 0.6rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 90ms ease, visibility 90ms ease;
+  }
+
+  .heatmap-tooltip.is-visible { opacity: 1; visibility: visible; }
+
+  .heatmap-legend {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 4px;
     margin-top: 8px;
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 10px;
+    font-size: 0.58rem;
     color: rgba(214, 226, 255, 0.5);
   }
 
-  .github-heatmap-legend i {
+  .heatmap-legend i {
     width: 9px;
     height: 9px;
     border-radius: 2px;
     display: inline-block;
   }
 
-  .github-heatmap-error {
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 12px;
-    color: rgba(214, 226, 255, 0.5);
-    text-align: center;
-    padding: 24px 0;
+  .heatmap-error {
     margin: 0;
+    padding: 24px 0;
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(214, 226, 255, 0.5);
   }
 
   .gh-month text {
     font-size: 8px;
     fill: rgba(214, 226, 255, 0.45);
-    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  @keyframes heatmap-drop {
+    0% { opacity: 0; transform: translateY(-14px); }
+    70% { opacity: 1; }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes heatmap-scan {
+    0% { transform: translateY(0); opacity: 0; }
+    15% { opacity: 0.7; }
+    100% { transform: translateY(120px); opacity: 0; }
+  }
+
+  @keyframes heatmap-boot {
+    0% { opacity: 0.4; filter: brightness(1.5); }
+    45% { opacity: 1; filter: brightness(0.92); }
+    100% { opacity: 1; filter: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .heatmap-terminal.is-booted,
+    .heatmap-wrap.is-building::after,
+    .heatmap-wrap.is-building .gh-cell {
+      animation: none !important;
+    }
+    .gh-cell { transition: none; }
+    .heatmap-tooltip { transition: none; }
   }
 </style>
