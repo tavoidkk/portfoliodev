@@ -1,29 +1,44 @@
 ---
 import { projects } from './projects.js';
 import ProjectCard from './ProjectCard.astro';
-
-const featured = projects.find((project) => project.featured) ?? projects[0];
-const secondary = projects.filter((project) => project !== featured);
 ---
 
-<div class="projects-showcase">
-  <ProjectCard project={featured} index={1} featured />
-
-  <div class="project-section-label">
-    <span>&gt; otros_proyectos.list()</span>
-    <span>{String(secondary.length).padStart(2, '0')} resultados</span>
+<section id="projects-terminal" class="projects-terminal terminal-shell stagger-item" data-project-terminal>
+  <div class="terminal-bar">
+    <span class="terminal-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="projects-terminal-title">tavoidkk@portfolio:~/projects$ ./grid --interactive</span>
+    <span class="projects-terminal-status">{String(projects.length).padStart(2, '0')} OK</span>
   </div>
 
-  <div class="projects-grid">
-    {secondary.map((project, i) => (
-      <ProjectCard project={project} index={i + 2} />
-    ))}
+  <div class="projects-body">
+    <div class="terminal-prompt projects-prompt" aria-hidden="true">
+      <span class="terminal-prompt-path">tavoidkk@portfolio</span><span class="terminal-prompt-sep">:~$</span>
+      <span class="terminal-prompt-cmd" data-project-cmd data-text="proyectos --grid">proyectos --grid</span>
+      <span class="terminal-cursor"></span>
+    </div>
+
+    <div class="projects-meta" aria-hidden="true">
+      <span>&gt; proyectos.listado()</span>
+      <span>{String(projects.length).padStart(2, '0')} módulos cargados</span>
+    </div>
+
+    <div class="projects-grid">
+      {projects.map((project, i) => (
+        <ProjectCard project={project} index={i + 1} featured={Boolean(project.featured)} />
+      ))}
+    </div>
+
+    <p class="projects-hint" aria-hidden="true">click / Enter expandir · Escape cerrar</p>
   </div>
-</div>
+</section>
 
 <script>
-  const initProjectCards = () => {
-    const cards = Array.from(document.querySelectorAll<HTMLElement>('[data-project-card]'));
+  const initProjectsTerminal = () => {
+    const terminal = document.querySelector<HTMLElement>('[data-project-terminal]');
+    if (!terminal) return;
+
+    const cards = Array.from(terminal.querySelectorAll<HTMLElement>('[data-project-card]'));
+    const command = terminal.querySelector<HTMLElement>('[data-project-cmd]');
     if (!cards.length) return;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,10 +52,12 @@ const secondary = projects.filter((project) => project !== featured);
       const button = card.querySelector<HTMLButtonElement>('[data-project-more]');
       const details = card.querySelector<HTMLElement>('[data-project-details]');
       const label = button?.querySelector<HTMLElement>('[data-more-label]');
+      const mark = button?.querySelector<HTMLElement>('[data-more-mark]');
 
       card.classList.toggle('is-expanded', expanded);
       button?.setAttribute('aria-expanded', String(expanded));
-      if (label) label.textContent = expanded ? 'Contraer' : 'Ver más';
+      if (label) label.textContent = expanded ? 'contraer' : 'expandir';
+      if (mark) mark.textContent = expanded ? '[-]' : '[+]';
       if (details) {
         details.setAttribute('aria-hidden', String(!expanded));
         details.inert = !expanded;
@@ -56,7 +73,10 @@ const secondary = projects.filter((project) => project !== featured);
       animating = true;
       card.style.setProperty('view-transition-name', 'project-card-morph');
 
+      let settled = false;
       const done = () => {
+        if (settled) return;
+        settled = true;
         card.style.removeProperty('view-transition-name');
         animating = false;
         after?.();
@@ -70,6 +90,7 @@ const secondary = projects.filter((project) => project !== featured);
 
       const transition = doc.startViewTransition(mutate);
       transition.finished.finally(done);
+      window.setTimeout(done, 800);
     };
 
     const open = (card: HTMLElement) => {
@@ -107,7 +128,9 @@ const secondary = projects.filter((project) => project !== featured);
     };
 
     cards.forEach((card) => {
-      card.querySelector<HTMLButtonElement>('[data-project-more]')?.addEventListener('click', () => {
+      card.addEventListener('click', (event) => {
+        const target = event.target as Element;
+        if (target.closest('a')) return;
         if (card.classList.contains('is-expanded')) close(card);
         else open(card);
       });
@@ -116,49 +139,113 @@ const secondary = projects.filter((project) => project !== featured);
     document.addEventListener('keydown', (event) => {
       if (event.key === 'Escape' && openCard) close(openCard);
     });
+
+    const boot = () => {
+      if (terminal.dataset.booted) return;
+      terminal.dataset.booted = 'true';
+      terminal.classList.add('is-booted');
+
+      if (reduceMotion || !command) {
+        terminal.classList.add('is-ready');
+        return;
+      }
+
+      const text = command.dataset.text ?? command.textContent ?? '';
+      command.textContent = '';
+      let index = 0;
+
+      const type = () => {
+        command.textContent = text.slice(0, index + 1);
+        index += 1;
+        if (index < text.length) window.setTimeout(type, 28);
+        else terminal.classList.add('is-ready');
+      };
+
+      window.setTimeout(type, 200);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        boot();
+        observer.disconnect();
+      }
+    }, { threshold: 0.2 });
+
+    observer.observe(terminal);
   };
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initProjectCards, { once: true });
+    document.addEventListener('DOMContentLoaded', initProjectsTerminal, { once: true });
   } else {
-    initProjectCards();
+    initProjectsTerminal();
   }
 </script>
 
 <style>
-  .projects-showcase {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .projects-terminal { font-family: 'Fira Code', ui-monospace, monospace; }
+
+  .projects-terminal.is-booted { animation: projects-boot 460ms steps(2, end) both; }
+
+  .projects-terminal-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
-  .project-section-label {
+  .projects-terminal-status {
+    margin-left: auto;
+    color: var(--term-green);
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .projects-body { padding: 0.85rem; }
+
+  .projects-prompt { margin-bottom: 0.75rem; }
+
+  .projects-meta {
     display: flex;
     justify-content: space-between;
     gap: 1rem;
-    margin: 0.8rem 0 0;
-    color: rgba(214, 226, 255, 0.44);
-    font: 500 0.62rem 'Fira Code', ui-monospace, monospace;
-    letter-spacing: 0.07em;
+    margin: 0 0 0.8rem;
+    color: rgba(214, 226, 255, 0.42);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .projects-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 0.8rem;
+  }
+
+  .projects-hint {
+    margin-top: 0.75rem;
+    color: rgba(214, 226, 255, 0.3);
+    font-size: 0.52rem;
+    letter-spacing: 0.05em;
   }
 
   @media (min-width: 640px) {
-    .projects-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
+    .projects-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+
+  @keyframes projects-boot {
+    0% { opacity: 0.35; filter: brightness(1.5); }
+    40% { opacity: 1; filter: brightness(0.92); }
+    70% { opacity: 0.75; filter: brightness(1.2); }
+    100% { opacity: 1; filter: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .projects-terminal.is-booted { animation: none; }
   }
 </style>
 
 <style is:global>
   ::view-transition-group(project-card-morph) {
-    animation-duration: 460ms;
+    animation-duration: 420ms;
     animation-timing-function: cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
