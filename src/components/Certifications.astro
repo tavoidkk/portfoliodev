@@ -1,82 +1,624 @@
 ---
 const BASE = import.meta.env.BASE_URL;
+
 const certifications = [
   {
     title: 'Curso Gratis de Programación Básica',
     org: 'Platzi',
+    slug: 'platzi/programacion-basica',
     date: null,
     id: null,
     url: 'https://platzi.com/p/gvidal0307/curso/13100-programacion-basica/diploma/detalle/',
+    accent: '#22d3ee',
   },
   {
     title: 'Understanding Data Engineering',
     org: 'DataCamp',
+    slug: 'datacamp/understanding-data-engineering',
     date: 'Jun 2026',
     id: '48,109,800',
     url: `${BASE}cert-data-engineering.pdf`,
+    accent: '#34d399',
   },
   {
     title: 'Introduction to SQL',
     org: 'DataCamp',
+    slug: 'datacamp/introduction-to-sql',
     date: 'Jun 2026',
     id: '41,905,638',
     url: `${BASE}cert-intro-sql.pdf`,
+    accent: '#60a5fa',
   },
   {
     title: 'AI-Assisted Coding for Developers',
     org: 'DataCamp',
+    slug: 'datacamp/ai-assisted-coding',
     date: 'Jun 2026',
     id: '48,075,145',
     url: `${BASE}cert-ai-coding.pdf`,
+    accent: '#a78bfa',
   },
-  // {
-  //   title: 'DESARROLLO CON IA: DE 0 A PRODUCCION',
-  //   org: 'BIG School',
-  //   date: 'Mar 2026',
-  //   id: null,
-  //   pdf: '/cert-ia-produccion.pdf',
-  // },
   {
     title: 'DESARROLLO CON IA',
     org: 'BIG School',
+    slug: 'big-school/desarrollo-con-ia',
     date: 'Oct 2025',
     id: null,
     url: `${BASE}cert-ia-big-school.pdf`,
+    accent: '#f472b6',
   },
   {
     title: 'Introduction to Python for Developers',
     org: 'DataCamp',
+    slug: 'datacamp/introduction-to-python',
     date: 'Oct 2026',
     id: '50,608,538',
     url: 'https://www.datacamp.com/statement-of-accomplishment/course/906cc57d321a071479f230bffc5ce04b9dcf0d70?raw=1',
+    accent: '#facc15',
   },
 ];
+
+const total = certifications.length;
 ---
 
-<section class="flex flex-col gap-3 md:gap-4 stagger-item" id="cert-list">
-  {certifications.map((cert, index) => (
-    <article
-      class="glass-panel glow-border rounded-xl px-4 py-4 md:px-6 md:py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-      style={`transition-delay: ${index * 60}ms;`}
-    >
-      <div class="flex-1 min-w-0">
-        <h3 class="text-sm md:text-base font-semibold text-slate-100 truncate">
-          {cert.title}
-        </h3>
-        <p class="text-xs md:text-sm text-slate-400 mt-0.5">
-          {cert.org}{cert.date && <> • {cert.date}</>}
-          {cert.id && <span class="ml-2 text-slate-500">ID: {cert.id}</span>}
-        </p>
+<section id="cert-list" class="cert-terminal stagger-item" data-cert-terminal>
+  <div class="cert-terminal-bar">
+    <span class="cert-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+    <span class="cert-terminal-title">tavoidkk@portfolio:~$ ./verify --all</span>
+    <span class="cert-terminal-status">{total}/{total} OK</span>
+  </div>
+
+  <div class="cert-terminal-body">
+    <div class="cert-prompt" aria-hidden="true">
+      <span class="cert-prompt-path">tavoidkk@portfolio</span><span class="cert-prompt-sep">:~$</span>
+      <span class="cert-prompt-cmd" data-cert-cmd data-text="certs --list">certs --list</span>
+      <span class="cert-cursor"></span>
+    </div>
+
+    <div class="cert-layout">
+      <ul class="cert-list" role="listbox" aria-label="Certificaciones" data-cert-list>
+        {certifications.map((cert, index) => (
+          <li role="none">
+            <button
+              type="button"
+              role="option"
+              class="cert-row"
+              style={`--cert-accent:${cert.accent};`}
+              aria-selected={index === 0 ? 'true' : 'false'}
+              tabindex={index === 0 ? 0 : -1}
+              data-cert-item
+              data-index={index}
+            >
+              <span class="cert-badge" aria-hidden="true">[OK]</span>
+              <span class="cert-date">{cert.date ?? 'S/F'}</span>
+              <span class="cert-path">{cert.slug}</span>
+              <span class="cert-caret" aria-hidden="true">→</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+
+      <div class="cert-detail" data-cert-detail>
+        {certifications.map((cert, index) => (
+          <article
+            class:list={['cert-panel', { 'is-active': index === 0 }]}
+            style={`--cert-accent:${cert.accent};`}
+            data-cert-panel
+            data-index={index}
+            aria-hidden={index === 0 ? 'false' : 'true'}
+            inert={index !== 0}
+          >
+            <p class="cert-panel-kicker">&gt; {cert.slug}.meta</p>
+            <h3 class="cert-panel-title">{cert.title}</h3>
+            <dl class="cert-panel-meta">
+              <div><dt>org</dt><dd>{cert.org}</dd></div>
+              <div><dt>fecha</dt><dd>{cert.date ?? 'Sin fecha'}</dd></div>
+              <div><dt>id</dt><dd>{cert.id ?? 'N/D'}</dd></div>
+              <div><dt>estado</dt><dd class="cert-verified">VERIFIED</dd></div>
+            </dl>
+            <a class="cert-open" href={cert.url} target="_blank" rel="noopener noreferrer">
+              <span aria-hidden="true">[</span> abrir_certificado <span aria-hidden="true">↗ ]</span>
+            </a>
+          </article>
+        ))}
       </div>
-      <a
-        href={cert.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        class="inline-flex items-center justify-center gap-2 px-3 py-1.5 text-xs font-medium rounded-lg border border-cyan-300/20 text-cyan-200 hover:text-violet-200 hover:bg-violet-500/15 hover:border-violet-400/60 transition whitespace-nowrap"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 12H9M12 9v6"/><circle cx="12" cy="12" r="10"/></svg>
-        Ver certificación
-      </a>
-    </article>
-  ))}
+    </div>
+
+    <p class="cert-hint" aria-hidden="true">↑↓ navegar · Enter abrir · hover pausa</p>
+  </div>
 </section>
+
+<script>
+  const initCertTerminal = () => {
+    const terminal = document.querySelector<HTMLElement>('[data-cert-terminal]');
+    if (!terminal) return;
+
+    const rows = Array.from(terminal.querySelectorAll<HTMLButtonElement>('[data-cert-item]'));
+    const panels = Array.from(terminal.querySelectorAll<HTMLElement>('[data-cert-panel]'));
+    const command = terminal.querySelector<HTMLElement>('[data-cert-cmd]');
+    if (!rows.length || !panels.length) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0;
+    let timer: number | null = null;
+    let booted = false;
+    let hovering = false;
+    let focused = false;
+
+    const select = (index: number, focus = false) => {
+      current = (index + rows.length) % rows.length;
+
+      rows.forEach((row, i) => {
+        const active = i === current;
+        row.setAttribute('aria-selected', String(active));
+        row.classList.toggle('is-active', active);
+        row.tabIndex = active ? 0 : -1;
+      });
+
+      panels.forEach((panel, i) => {
+        const active = i === current;
+        panel.classList.toggle('is-active', active);
+        panel.setAttribute('aria-hidden', String(!active));
+        panel.inert = !active;
+      });
+
+      if (focus) rows[current].focus({ preventScroll: true });
+    };
+
+    const stopAutoplay = () => {
+      if (timer !== null) {
+        window.clearInterval(timer);
+        timer = null;
+      }
+    };
+
+    const startAutoplay = () => {
+      stopAutoplay();
+      if (reduceMotion || !booted) return;
+      timer = window.setInterval(() => {
+        if (!hovering && !focused && !document.hidden) select(current + 1);
+      }, 3200);
+    };
+
+    rows.forEach((row, index) => {
+      row.addEventListener('pointerenter', () => {
+        hovering = true;
+        select(index);
+      });
+      row.addEventListener('pointerleave', () => {
+        hovering = false;
+      });
+      row.addEventListener('focus', () => {
+        focused = true;
+        select(index);
+      });
+      row.addEventListener('blur', () => {
+        focused = false;
+      });
+      row.addEventListener('click', () => select(index));
+      row.addEventListener('keydown', (event) => {
+        if (event.key === 'ArrowDown') {
+          event.preventDefault();
+          select(current + 1, true);
+        } else if (event.key === 'ArrowUp') {
+          event.preventDefault();
+          select(current - 1, true);
+        } else if (event.key === 'Home') {
+          event.preventDefault();
+          select(0, true);
+        } else if (event.key === 'End') {
+          event.preventDefault();
+          select(rows.length - 1, true);
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          panels[current].querySelector<HTMLAnchorElement>('.cert-open')?.click();
+        }
+      });
+    });
+
+    terminal.addEventListener('pointerenter', () => { hovering = true; });
+    terminal.addEventListener('pointerleave', () => { hovering = false; });
+    terminal.addEventListener('focusin', () => { focused = true; });
+    terminal.addEventListener('focusout', () => { focused = false; });
+
+    select(0);
+
+    const boot = () => {
+      if (booted) return;
+      booted = true;
+      terminal.classList.add('is-booted');
+
+      if (reduceMotion || !command) {
+        terminal.classList.add('is-ready');
+        startAutoplay();
+        return;
+      }
+
+      const text = command.dataset.text ?? command.textContent ?? '';
+      command.textContent = '';
+      let index = 0;
+
+      const type = () => {
+        command.textContent = text.slice(0, index + 1);
+        index += 1;
+        if (index < text.length) {
+          window.setTimeout(type, 30);
+        } else {
+          terminal.classList.add('is-ready');
+          startAutoplay();
+        }
+      };
+
+      window.setTimeout(type, 240);
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          boot();
+          startAutoplay();
+        } else {
+          stopAutoplay();
+        }
+      });
+    }, { threshold: 0.3 });
+
+    observer.observe(terminal);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) stopAutoplay();
+      else startAutoplay();
+    });
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCertTerminal, { once: true });
+  } else {
+    initCertTerminal();
+  }
+</script>
+
+<style>
+  .cert-terminal {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(124, 249, 255, 0.18);
+    border-radius: 0.9rem;
+    background:
+      radial-gradient(120% 100% at 0% 0%, rgba(52, 211, 153, 0.07), transparent 55%),
+      linear-gradient(160deg, rgba(7, 13, 27, 0.96), rgba(4, 8, 19, 0.94));
+    box-shadow: 0 22px 55px rgba(0, 0, 0, 0.36);
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+
+  .cert-terminal::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg, rgba(124, 249, 255, 0.028) 0 1px, transparent 1px 4px);
+    mix-blend-mode: screen;
+  }
+
+  .cert-terminal.is-booted {
+    animation: cert-boot 520ms steps(2, end) both;
+  }
+
+  .cert-terminal-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.55rem 0.8rem;
+    border-bottom: 1px solid rgba(124, 249, 255, 0.12);
+    background: rgba(5, 10, 22, 0.8);
+    font-size: 0.6rem;
+    letter-spacing: 0.04em;
+    color: rgba(214, 226, 255, 0.55);
+  }
+
+  .cert-dots {
+    display: flex;
+    gap: 0.24rem;
+  }
+
+  .cert-dots i {
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .cert-dots i:nth-child(2) { background: #febc2e; }
+  .cert-dots i:nth-child(3) { background: #28c840; }
+
+  .cert-terminal-title {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .cert-terminal-status {
+    margin-left: auto;
+    color: #34d399;
+    letter-spacing: 0.1em;
+    white-space: nowrap;
+  }
+
+  .cert-terminal-body {
+    padding: 0.85rem;
+  }
+
+  .cert-prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-bottom: 0.7rem;
+    font-size: 0.66rem;
+    color: rgba(214, 226, 255, 0.75);
+  }
+
+  .cert-prompt-path { color: #34d399; }
+  .cert-prompt-sep { color: rgba(214, 226, 255, 0.45); }
+  .cert-prompt-cmd { color: #e6f1ff; }
+
+  .cert-cursor {
+    width: 0.45rem;
+    height: 0.85rem;
+    background: #34d399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.7);
+    animation: cert-blink 1.05s steps(1, end) infinite;
+  }
+
+  .cert-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .cert-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.14rem;
+    min-width: 0;
+  }
+
+  .cert-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto 3.6rem minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.5rem 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: rgba(214, 226, 255, 0.58);
+    text-align: left;
+    font: 500 0.62rem 'Fira Code', ui-monospace, monospace;
+    transition:
+      background 220ms ease,
+      border-color 220ms ease,
+      color 220ms ease,
+      box-shadow 220ms ease;
+    overflow: hidden;
+  }
+
+  .cert-row::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, color-mix(in oklab, var(--cert-accent) 22%, transparent) 50%, transparent 70%);
+    transform: translateX(-110%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cert-row:hover,
+  .cert-row.is-active {
+    color: #f2f7ff;
+    border-color: color-mix(in oklab, var(--cert-accent) 32%, transparent);
+    background: color-mix(in oklab, var(--cert-accent) 9%, transparent);
+    box-shadow: inset 2px 0 0 var(--cert-accent);
+  }
+
+  .cert-row:focus-visible,
+  .cert-open:focus-visible {
+    outline: 2px solid var(--cert-accent);
+    outline-offset: 2px;
+  }
+
+  .cert-row:hover::after,
+  .cert-row.is-active::after {
+    animation: cert-scan 640ms ease both;
+  }
+
+  .cert-row:hover .cert-path,
+  .cert-row.is-active .cert-path {
+    text-shadow: 1px 0 rgba(255, 0, 90, 0.35), -1px 0 rgba(0, 200, 255, 0.35);
+  }
+
+  .cert-badge {
+    color: #34d399;
+    font-size: 0.52rem;
+    letter-spacing: 0.04em;
+  }
+
+  .cert-date {
+    color: rgba(214, 226, 255, 0.42);
+    font-size: 0.52rem;
+    white-space: nowrap;
+  }
+
+  .cert-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: text-shadow 200ms ease;
+  }
+
+  .cert-caret {
+    color: var(--cert-accent);
+    opacity: 0;
+    transform: translateX(-3px);
+    transition: opacity 220ms ease, transform 220ms ease;
+  }
+
+  .cert-row:hover .cert-caret,
+  .cert-row.is-active .cert-caret {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .cert-detail {
+    display: grid;
+    min-width: 0;
+    border: 1px solid rgba(124, 249, 255, 0.13);
+    border-radius: 0.65rem;
+    background: rgba(3, 8, 18, 0.6);
+    padding: 0.85rem;
+  }
+
+  .cert-panel {
+    grid-area: 1 / 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 280ms ease, transform 280ms ease, visibility 280ms;
+  }
+
+  .cert-panel.is-active {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .cert-panel-kicker {
+    color: rgba(124, 249, 255, 0.55);
+    font-size: 0.55rem;
+    letter-spacing: 0.04em;
+    overflow-wrap: anywhere;
+  }
+
+  .cert-panel-title {
+    color: #f2f7ff;
+    font-size: 0.92rem;
+    line-height: 1.35;
+    font-weight: 650;
+  }
+
+  .cert-panel-meta {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem 0.8rem;
+  }
+
+  .cert-panel-meta dt {
+    color: rgba(214, 226, 255, 0.38);
+    font-size: 0.5rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+
+  .cert-panel-meta dd {
+    color: rgba(230, 241, 255, 0.82);
+    font-size: 0.64rem;
+    overflow-wrap: anywhere;
+  }
+
+  .cert-verified {
+    color: #34d399 !important;
+    letter-spacing: 0.08em;
+  }
+
+  .cert-open {
+    align-self: flex-start;
+    margin-top: 0.1rem;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid color-mix(in oklab, var(--cert-accent) 40%, transparent);
+    border-radius: 0.45rem;
+    background: color-mix(in oklab, var(--cert-accent) 8%, transparent);
+    color: var(--cert-accent);
+    font-size: 0.6rem;
+    transition: background 220ms ease, border-color 220ms ease, transform 220ms ease;
+  }
+
+  .cert-open:hover {
+    background: color-mix(in oklab, var(--cert-accent) 16%, transparent);
+    border-color: color-mix(in oklab, var(--cert-accent) 70%, transparent);
+    transform: translateY(-2px);
+  }
+
+  .cert-hint {
+    margin-top: 0.7rem;
+    color: rgba(214, 226, 255, 0.3);
+    font-size: 0.52rem;
+    letter-spacing: 0.05em;
+  }
+
+  @media (min-width: 768px) {
+    .cert-layout {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      align-items: stretch;
+    }
+
+    .cert-detail {
+      align-content: start;
+      height: 100%;
+    }
+
+    .cert-row {
+      font-size: 0.66rem;
+      padding: 0.52rem 0.6rem;
+    }
+
+    .cert-panel-title { font-size: 1rem; }
+  }
+
+  @keyframes cert-blink {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  @keyframes cert-scan {
+    0% { transform: translateX(-110%); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translateX(110%); opacity: 0; }
+  }
+
+  @keyframes cert-boot {
+    0% { opacity: 0.35; filter: brightness(1.6); }
+    40% { opacity: 1; filter: brightness(0.9); }
+    70% { opacity: 0.7; filter: brightness(1.3); }
+    100% { opacity: 1; filter: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cert-row,
+    .cert-row::after,
+    .cert-path,
+    .cert-caret,
+    .cert-panel,
+    .cert-open {
+      transition: none !important;
+      animation: none !important;
+    }
+
+    .cert-row:hover .cert-path,
+    .cert-row.is-active .cert-path {
+      text-shadow: none;
+    }
+
+    .cert-cursor {
+      animation: none;
+      opacity: 1;
+    }
+
+    .cert-terminal.is-booted {
+      animation: none;
+    }
+  }
+</style>
