@@ -1,7 +1,7 @@
 export const experiences = [
   {
     date: "Febrero 2026 - Actualmente",
-    title: "AI Product Engineer",
+    title: "AI & Automation Solutions Architect | Full-Stack Engineer",
     company: "Athena Business Group",
     description:
       "Mi enfoque abarca desde la arquitectura de software hasta la automatización de crecimiento. Diseño ecosistemas integrados donde conecto la captación de prospectos en frío mediante extracción de bases de datos públicas y plataformas como Apollo para nutrir flujos de ventas potenciados por agentes de voz IA y Cold Email. A nivel de infraestructura, mantengo la integridad mediante un Data Vault central con APIs REST hacia el CRM, centralizo la autenticación con Authentik y acelero el desarrollo de aplicaciones SaaS",
